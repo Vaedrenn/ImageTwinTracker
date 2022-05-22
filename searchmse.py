@@ -1,10 +1,9 @@
 import os
-import time
-
 import numpy as np
 import cv2
 import imghdr
 from tcontainer import tcontainer
+import csv
 
 
 # creates a list of tensors for a given directory
@@ -36,6 +35,7 @@ def create_tensor(file):
 
 # Function that calulates the mean squared error (mse) between two image matrices
 def mse(first, second):
+
     tensor1 = first.tensor
     tensor2 = second.tensor
 
@@ -45,46 +45,17 @@ def mse(first, second):
 
         return err
     except ValueError:
-        print(first.path, second.path)
+        print("Value Error: ", first.path, second.path)
     except AttributeError:
-        print(first.path, second.path)
+        print("Attribute Error: ", first.path, second.path)
 
 
-# Searches for duplicates
+# # Searches for duplicates and removes them from the array when found, should speed up program in theory
 # arr: array of tcontainer objects
 # threshold: the threshold at which the MSE is less than that we consider two images as duplicates.
 #            When two images are completely different the MSE is usually over 1000 or so.
 #            Visually similar images such as edited images range from 50-100
 def mse_search(arr, threshold):
-    dupe_matrix = []
-    for files in range(len(arr)):
-        # clear dupes arr before each cycle ignore the squiggly line
-        dupes = []
-
-        dupes.append(arr[0])
-        # go through the tensors and find the mse
-        i = 1
-        while len(arr) >= 2 and i < len(arr):
-            ratio = mse(arr[0], arr[i])
-            # if the mse is less than the threshold add it to the bundle of dupes for this image
-            if ratio < threshold:
-                dupes.append(arr[i])
-
-            i = i + 1
-
-        # If dupes has more than one object then put it into the return matrix
-        if len(dupes) >= 2:
-            dupe_matrix.append(dupes)
-
-        arr.pop(0)
-        i = 1
-
-    return dupe_matrix
-
-
-# Searches for duplicates and removes them from the array when found, speeding up search time.
-# Use this when you're sure there's lots of dupes or with hundreds of thousands of files
-def mse_search_lite(arr, threshold):
     dupe_matrix = []
     while len(arr) > 0:
         # clear dupes arr before each cycle ignore the squiggly line
@@ -101,13 +72,12 @@ def mse_search_lite(arr, threshold):
                 i = i - 1
 
             i = i + 1
-
         # If dupes has more than one object then put it into the return matrix
         if len(dupes) >= 2:
             dupe_matrix.append(dupes)
-
         arr.pop(0)
-        i = 1
 
     return dupe_matrix
+
+
 
