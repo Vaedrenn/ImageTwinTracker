@@ -1,9 +1,10 @@
 import os
+import pickle
+
 import numpy as np
 import cv2
 import imghdr
 from tcontainer import tcontainer
-import csv
 
 
 # creates a list of tensors for a given directory
@@ -55,6 +56,11 @@ def mse(first, second):
 # threshold: the threshold at which the MSE is less than that we consider two images as duplicates.
 #            When two images are completely different the MSE is usually over 1000 or so.
 #            Visually similar images such as edited images range from 50-100
+# dupe_matrix:  returns something like this where each array is a set of duplicate images
+#               [[tcontainer, tcontainer, tcontainer],
+#                [tcontainer, tcontainer, tcontainer],
+#                [tcontainer, tcontainer, tcontainer]]
+# tcontainer: has a file path and a ndarray: self.path, self.tensor
 def mse_search(arr, threshold):
     dupe_matrix = []
     while len(arr) > 0:
@@ -79,5 +85,19 @@ def mse_search(arr, threshold):
 
     return dupe_matrix
 
+# Exports the tlist into a pickle file to be reused later. Like a cache or something
+def export_tensors(tlist):
+    file = open("tensors.pickle", "wb")
+    pickle.dump(tlist, file)
+    file.close()
+    return True
+
+
+# Imports the pickle file to be used.
+def import_tensors():
+    file = open("tensors.pickle", "rb")
+    ret = pickle.load(file)
+    file.close()
+    return ret
 
 
