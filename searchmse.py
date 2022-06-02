@@ -36,7 +36,6 @@ def create_tensor(file):
 
 # Function that calulates the mean squared error (mse) between two image matrices
 def mse(first, second):
-
     tensor1 = first.tensor
     tensor2 = second.tensor
 
@@ -45,10 +44,13 @@ def mse(first, second):
         err /= float(tensor1.shape[0] * tensor1.shape[1])
 
         return err
+    # Still want the program to continue, don't count the images as dupes and continue
     except ValueError:
         print("Value Error: ", first.path, second.path)
+        return 1000000
     except AttributeError:
         print("Attribute Error: ", first.path, second.path)
+        return 1000000
 
 
 # # Searches for duplicates and removes them from the array when found, should speed up program in theory
@@ -64,12 +66,12 @@ def mse(first, second):
 def mse_search(arr, threshold):
     dupe_matrix = []
     while len(arr) > 0:
-        # clear dupes arr before each cycle ignore the squiggly line
+        # reset i and dupes arr before each cycle, ignore the squiggly line
+        i = 1
         dupes = []
 
         dupes.append(arr[0])
         # go through the tensors and find the mse
-        i = 1
         while len(arr) >= 2 and i < len(arr):
             ratio = mse(arr[0], arr[i])
             # if the mse is less than the threshold add it to the bundle of dupes for this image
@@ -85,19 +87,18 @@ def mse_search(arr, threshold):
 
     return dupe_matrix
 
+
 # Exports the tlist into a pickle file to be reused later. Like a cache or something
-def export_tensors(tlist):
-    file = open("tensors.pickle", "wb")
+def export_tensors(tlist, filename="tensors.pickle"):
+    file = open(filename, "wb")
     pickle.dump(tlist, file)
     file.close()
     return True
 
 
 # Imports the pickle file to be used.
-def import_tensors():
-    file = open("tensors.pickle", "rb")
+def import_tensors(path=r"tensors.pickle"):
+    file = open(path, "rb")
     ret = pickle.load(file)
     file.close()
     return ret
-
-
