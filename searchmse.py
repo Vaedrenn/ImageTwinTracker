@@ -63,7 +63,7 @@ def mse(first, second):
 #                [tcontainer, tcontainer, tcontainer],
 #                [tcontainer, tcontainer, tcontainer]]
 # tcontainer: has a file path and a ndarray: self.path, self.tensor
-def mse_search(arr, threshold):
+def mse_search(arr, threshold=20):
     dupe_matrix = []
     while len(arr) > 0:
         # reset i and dupes arr before each cycle, ignore the squiggly line
@@ -80,10 +80,26 @@ def mse_search(arr, threshold):
                 i = i - 1
 
             i = i + 1
+
         # If dupes has more than one object then put it into the return matrix
         if len(dupes) >= 2:
             dupe_matrix.append(dupes)
         arr.pop(0)
+
+    return dupe_matrix
+
+
+# searches duplicates from folder 1 in folder 2, but only marks the ones in folder 1
+def mse_search_two(src, dst, threshold=20):
+    dupe_matrix = []
+    for src_img in src:
+        dupes = []
+        dupes.append(src_img)
+
+        for dst_img in dst:
+            ratio = mse(dst_img, src_img)
+        if ratio < threshold:
+            dupe_matrix.append(src_img)
 
     return dupe_matrix
 
