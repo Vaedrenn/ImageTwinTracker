@@ -92,14 +92,17 @@ def mse_search(arr, threshold=20):
 # searches duplicates from folder 1 in folder 2, but only marks the ones in folder 1
 def mse_search_two(src, dst, threshold=20):
     dupe_matrix = []
-    for src_img in src:
+    while len(src) > 0:
         dupes = []
-        dupes.append(src_img)
+        dupes.append(src[0])
 
         for dst_img in dst:
-            ratio = mse(dst_img, src_img)
-        if ratio < threshold:
-            dupe_matrix.append(src_img)
+            ratio = mse(dst_img, src[0])
+
+            if ratio < threshold:
+                dupe_matrix.append(src[0])
+                break
+        src.pop(0)
 
     return dupe_matrix
 
