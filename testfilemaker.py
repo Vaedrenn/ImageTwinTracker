@@ -2,7 +2,7 @@ import os
 import random
 from PIL import Image
 
-path = r"C:\Users\khei\PycharmProjects\MSE-Duplicate-Image-Finder\test 4"
+path = r"Tests"
 
 
 # main driver function
