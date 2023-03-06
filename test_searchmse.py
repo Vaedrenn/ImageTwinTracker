@@ -56,7 +56,6 @@ class TestSearch(TestCase):
     def test_dupe_mixed(self, threshold=500, root=r"tests\dupe test 3"):
 
         testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
-        # There are two test folders, make sure they are being tested
         self.assertEqual(len(testfolders), 2)
         # Each folder has two pairs of duplicate images
         for folder in testfolders:
@@ -104,14 +103,14 @@ class TestImportExport(TestCase):
     # Test if importing the pickle file works
     def test_import_tensors(self):
         tlist = searchmse.import_tensors()
-        # Successful import?
+
         if not tlist:
             self.fail()
-        # Can we use it?
+
         result = searchmse.mse_search(tlist, 500)
         if not result:
             self.fail()
-        # Is it accurate?
+
         self.assertEqual(len(result), 8)
         for r in result:
             self.assertEqual(len(r), 11)
@@ -126,7 +125,7 @@ class TestImportExport(TestCase):
         result = searchmse.mse_search(tlist, 500)
         if not result:
             self.fail()
-        # Is it accurate?
+
         self.assertEqual(len(result), 2)
         for r in result:
             self.assertEqual(len(r), 2)
