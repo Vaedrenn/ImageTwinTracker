@@ -50,11 +50,12 @@ def create_tensor(file):
     return ret
 
 
-# go through each of the arrays and
+# MSE search each split of the tensor list
 def fastsearch(arr, threshold=50):
     dupe_matrix = []
     for x in arr:
         temp = searchmse.mse_search(x, threshold)
+        # break apart the lists and append it to the return matrix
         for y in temp:
             dupe_matrix.append(y)
     return dupe_matrix
