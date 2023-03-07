@@ -1,6 +1,7 @@
 import os
 from unittest import TestCase
 
+import fastermse
 import searchmse
 
 
@@ -17,6 +18,7 @@ class TestCreate(TestCase):
         root = r"tests\tensor test\test 2"
         tlist = searchmse.create_tensor_list(root)
         self.assertEqual(len(tlist), 11)
+
 
 
 class TestSearch(TestCase):
@@ -36,6 +38,7 @@ class TestSearch(TestCase):
 
             for a in result:
                 self.assertEqual(len(a), 11)
+
 
     # Should not find any duplicates
     def test_dupes_false(self, threshold=500, root=r"tests\dupe test 2"):
@@ -66,6 +69,9 @@ class TestSearch(TestCase):
             # Are there only two images per?
             for a in result:
                 self.assertEqual(len(a), 2)
+            for x in result:
+                for y in x:
+                    print(y.path)
 
 
 class TestSearch2(TestCase):
@@ -131,7 +137,29 @@ class TestImportExport(TestCase):
             self.assertEqual(len(r), 2)
 
 
+class TestFasterSearch(TestCase):
+
+    # Test mixed folder of dupes and none dupes
+    def test_dupe_mixed(self, threshold=500, root=r"tests\dupe test 3"):
+
+        testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
+        self.assertEqual(len(testfolders), 2)
+        # Each folder has two pairs of duplicate images
+        for folder in testfolders:
+            arr = fastermse.create_tensor_list(folder)
+            result = fastermse.fastsearch(arr, threshold)
+
+            # Are there two groups of duplicate images?
+            self.assertEqual(len(result), 2)
+            # Are there only two images per?
+            for a in result:
+                self.assertEqual(len(a), 2)
+
+
 if __name__ == '__main__':
+    
     TestCreate()
     TestSearch()
     TestImportExport()
+    TestFasterSearch()
+    
