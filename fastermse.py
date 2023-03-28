@@ -5,28 +5,7 @@ import imghdr
 
 import searchmse
 from tcontainer import tcontainer
-
-
-# creates a list of tensors for a given directory
-def create_tensor_list(root, px_size=50):
-    landscape = []
-    portrait = []
-    square = []
-    tensor_list = (landscape, portrait, square)
-
-    # create list of all files in directory
-    folder_files = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in files]
-    for file in folder_files:
-        # only process images don't process gifs
-        if imghdr.what(file) and not imghdr.what(file) == "gif" and not imghdr.what(file) == "psd":
-            tensor = create_tensor(file)
-            if tensor.ratio == 'l':
-                tensor_list[0].append(tensor)
-            elif tensor.ratio == 'w':
-                tensor_list[1].append(tensor)
-            else:
-                tensor_list[2].append(tensor)
-    return tensor_list
+from multiprocessing import Pool
 
 
 # read the image data and convert it into a tensor
@@ -50,12 +29,49 @@ def create_tensor(file):
     return ret
 
 
+# process a single file and return the tensor
+def process_file(file):
+    # only process images don't process gifs
+    if imghdr.what(file) and not imghdr.what(file) == "gif" and not imghdr.what(file) == "psd":
+        return create_tensor(file)
+    else:
+        print("skipped:", file)
+        return None
+
+
+# creates a list of tensors for a given directory using multiprocessing
+def create_tensor_list(root, px_size=50, num_processes=4):
+    landscape = []
+    portrait = []
+    square = []
+    tensor_list = (landscape, portrait, square)
+
+    # create list of all files in directory
+    folder_files = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in files]
+
+    # create process pool
+    with Pool(processes=num_processes) as pool:
+        # process files in parallel
+        tensors = pool.map(process_file, folder_files)
+
+    # collect tensors into the tensor_list
+    for tensor in tensors:
+        if tensor:
+            if tensor.ratio == 'l':
+                tensor_list[0].append(tensor)
+            elif tensor.ratio == 'w':
+                tensor_list[1].append(tensor)
+            else:
+                tensor_list[2].append(tensor)
+
+    return tensor_list
+
+
 # MSE search each split of the tensor list
 def fastsearch(arr, threshold=50):
     dupe_matrix = []
     for x in arr:
         temp = searchmse.mse_search(x, threshold)
-        # break apart the lists and append it to the return matrix
         for y in temp:
             dupe_matrix.append(y)
     return dupe_matrix
