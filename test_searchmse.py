@@ -165,7 +165,7 @@ class TestSearchmp(TestCase):
             if not arr:
                 self.fail()
 
-            result = fastermse.fastsearch(arr, 500)
+            result = fastermse.fastsearch(arr, threshold)
             if not result:
                 self.fail()
 
@@ -173,10 +173,20 @@ class TestSearchmp(TestCase):
                 print(a[0].path)
                 self.assertEqual(len(a), 11)
 
+    # Should not find any duplicates
+    def test_dupes_false(self, threshold=500, root=r"tests\dupe test 2"):
+        testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
+        if not testfolders:
+            self.fail()
 
+        for folder in testfolders:
+            arr = fastermse.create_tensor_list_multiproc(folder)
+            if not arr:
+                self.fail()
 
-
-
+            result = fastermse.fastsearch(arr, threshold)
+            for a in result:
+                self.assertEqual(len(a), None)
 
 
 if __name__ == '__main__':
@@ -184,3 +194,4 @@ if __name__ == '__main__':
     TestSearch()
     TestImportExport()
     TestFasterSearch()
+    TestSearchmp()
