@@ -20,7 +20,6 @@ class TestCreate(TestCase):
         self.assertEqual(len(tlist), 11)
 
 
-
 class TestSearch(TestCase):
     # Test if mse search actually detects duplicates
     def test_dupes(self, threshold=500, root=r"tests\Dupe test"):
@@ -38,7 +37,6 @@ class TestSearch(TestCase):
 
             for a in result:
                 self.assertEqual(len(a), 11)
-
 
     # Should not find any duplicates
     def test_dupes_false(self, threshold=500, root=r"tests\dupe test 2"):
@@ -156,10 +154,33 @@ class TestFasterSearch(TestCase):
                 self.assertEqual(len(a), 2)
 
 
+class TestSearchmp(TestCase):
+    # Test if mse search actually detects duplicates
+    def test_dupes(self, threshold=500, root=r"tests\Dupe test"):
+        testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
+        self.assertEqual(len(testfolders), 8)
+
+        for folder in testfolders:
+            arr = fastermse.create_tensor_list_multiproc(folder)
+            if not arr:
+                self.fail()
+
+            result = fastermse.fastsearch(arr, 500)
+            if not result:
+                self.fail()
+
+            for a in result:
+                print(a[0].path)
+                self.assertEqual(len(a), 11)
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    
     TestCreate()
     TestSearch()
     TestImportExport()
     TestFasterSearch()
-    
