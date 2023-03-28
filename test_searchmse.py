@@ -188,6 +188,22 @@ class TestSearchmp(TestCase):
             for a in result:
                 self.assertEqual(len(a), None)
 
+    # Test mixed folder of dupes and none dupes
+    def test_dupe_mixed(self, threshold=500, root=r"tests\dupe test 3"):
+
+        testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
+        self.assertEqual(len(testfolders), 2)
+        # Each folder has two pairs of duplicate images
+        for folder in testfolders:
+            arr = fastermse.create_tensor_list_multiproc(folder)
+            result = fastermse.fastsearch(arr, threshold)
+
+            # Are there two groups of duplicate images?
+            self.assertEqual(len(result), 2)
+            # Are there only two images per?
+            for a in result:
+                self.assertEqual(len(a), 2)
+
 
 if __name__ == '__main__':
     TestCreate()
