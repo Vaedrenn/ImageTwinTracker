@@ -1,104 +1,76 @@
-import os
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QHBoxLayout, QWidget, QListWidget, QListWidgetItem, \
-    QSplitter, QSizePolicy
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QFrame, QMenuBar, QSplitter, QGroupBox, QLabel, QLineEdit, QTextEdit, QAction, QMenu, QPushButton, QFileDialog
 
-
-class ImageBrowserWindow(QMainWindow):
-    def __init__(self, image_directory):
+class MyWidget(QWidget):
+    def __init__(self):
         super().__init__()
-        self.setWindowTitle('Image Browser')
-        self.setGeometry(100, 100, 800, 600)
+        self.initUI()
 
-        self.image_directory = image_directory
-        self.images = []
-        self.current_image_index = 0
+    def initUI(self):
+        # Create a QVBoxLayout instance
+        vbox = QVBoxLayout()
 
-        self.image_label_widget = QWidget(self)
-        self.image_label_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.image_label_layout = QHBoxLayout(self.image_label_widget)
-        self.image_label_layout.setContentsMargins(0, 0, 0, 0)
+        # Create the menu bar
+        menu_bar = QMenuBar()
+        vbox.addWidget(menu_bar)
 
-        self.image_list_widget = QListWidget(self)
-        self.image_list_widget.itemClicked.connect(self.show_selected_image)
-        self.image_list_widget.setMinimumSize(200,200)
+        # Create the file menu
+        file_menu = QMenu("File", self)
 
-        splitter = QSplitter(Qt.Horizontal)
-        splitter.addWidget(self.image_list_widget)
-        splitter.addWidget(self.image_label_widget)
-        splitter.setSizes([200, 400])
-        splitter.setMinimumSize(200,200)
-        splitter.setCollapsible(0, False)
-        splitter.setCollapsible(1, False)
+        # Add filler actions for the file menu
+        filler_action1 = QAction("Option 1", self)
+        file_menu.addAction(filler_action1)
 
-        layout = QHBoxLayout()
-        layout.addWidget(splitter)
+        filler_action2 = QAction("Option 2", self)
+        file_menu.addAction(filler_action2)
 
-        central_widget = QWidget(self)
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
+        filler_action3 = QAction("Option 3", self)
+        file_menu.addAction(filler_action3)
 
-        self.load_images()
-        self.populate_image_list()
-        self.show_current_image()
+        # Add the file menu to the menu bar
+        menu_bar.addMenu(file_menu)
 
-    def load_images(self):
-        image_files = [file for file in os.listdir(self.image_directory) if file.endswith('.jpg')]
-        self.images = [os.path.join(self.image_directory, file) for file in image_files]
+        # Create the splitter
+        splitter = QSplitter()
+        vbox.addWidget(splitter)
 
-    def populate_image_list(self):
-        for image_path in self.images:
-            image_name = os.path.basename(image_path)
-            item = QListWidgetItem(image_name)
-            self.image_list_widget.addItem(item)
+        # Create the form box
+        form_box = QGroupBox("Form Box")
+        form_layout = QVBoxLayout()
+        form_box.setLayout(form_layout)
+        splitter.addWidget(form_box)
 
-    def show_selected_image(self, item):
-        index = self.image_list_widget.row(item)
-        if index != self.current_image_index:
-            self.current_image_index = index
-            self.show_current_image()
+        # Add widgets to the form box
+        label1 = QLabel("Directory 1:")
+        line_edit1 = QLineEdit()
+        form_layout.addWidget(label1)
+        form_layout.addWidget(line_edit1)
 
-    def show_current_image(self):
-        image_path = self.images[self.current_image_index]
-        pixmap = QPixmap(image_path)
+        directory_button1 = QPushButton("Browse")
+        directory_button1.clicked.connect(lambda: self.browse_directory(line_edit1))
+        form_layout.addWidget(directory_button1)
 
-        image_label = QLabel(self.image_label_widget)
-        image_label.setAlignment(Qt.AlignCenter)
-        image_label.setPixmap(pixmap.scaled(self.image_label_widget.size(), Qt.AspectRatioMode.KeepAspectRatio))
+        label2 = QLabel("Directory 2:")
+        line_edit2 = QLineEdit()
+        form_layout.addWidget(label2)
+        form_layout.addWidget(line_edit2)
 
-        if self.image_label_layout.count() > 0:
-            self.image_label_layout.itemAt(0).widget().deleteLater()
+        directory_button2 = QPushButton("Browse")
+        directory_button2.clicked.connect(lambda: self.browse_directory(line_edit2))
+        form_layout.addWidget(directory_button2)
 
-        self.image_label_layout.addWidget(image_label)
+        # Set the layout for the main window
+        self.setLayout(vbox)
 
-    def eventFilter(self, obj, event):
-        if obj == self.image_list_widget and event.type() == QEvent.KeyPress:
-            key = event.key()
-            if key == Qt.Key_Up:
-                self.navigate(-1)
-                return True
-            elif key == Qt.Key_Down:
-                self.navigate(1)
-                return True
-        return super().eventFilter(obj, event)
+        self.setWindowTitle('Vertical Layout with Frames')
+        self.setGeometry(300, 300, 400, 300)
+        self.show()
 
-    def navigate(self, direction):
-        new_index = self.current_image_index + direction
-        if 0 <= new_index < len(self.images):
-            self.current_image_index = new_index
-            self.image_list_widget.setCurrentIndex(self.image_list_widget.model().index(new_index, 0))
-            self.show_current_image()
-
-    def showEvent(self, event):
-        self.image_list_widget.installEventFilter(self)
-
-    def hideEvent(self, event):
-        self.image_list_widget.removeEventFilter(self)
-
+    def browse_directory(self, line_edit):
+        directory = QFileDialog.getExistingDirectory(self, "Select Directory")
+        line_edit.setText(directory)
 
 if __name__ == '__main__':
-    app = QApplication([])
-    window = ImageBrowserWindow('test')
-    window.show()
-    app.exec_()
+    app = QApplication(sys.argv)
+    widget = MyWidget()
+    sys.exit(app.exec_())
