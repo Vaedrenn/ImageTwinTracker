@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QFrame, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QTextEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout
 
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QFrame, QMenuBar, QSplitter, QGroupBox, QLabel, \
+    QLineEdit, QTextEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget
 
 class MyWidget(QWidget):
     def __init__(self):
@@ -36,6 +37,20 @@ class MyWidget(QWidget):
         # Create the splitter
         splitter = QSplitter()
         vbox.addWidget(splitter)
+        # set the splitter so that the children are not collapsable
+        splitter.setChildrenCollapsible(False)
+
+        # Create the list widget
+        list_widget = QListWidget()
+        splitter.addWidget(list_widget)
+
+        # Create a blank image
+        image = QImage()  # Empty QImage object
+
+        # Add the image to a label
+        image_label = QLabel()
+        image_label.setPixmap(QPixmap.fromImage(image))
+        splitter.addWidget(image_label)
 
         # ########################################## Form Box ############################################ #
         form_box = QGroupBox("Form Box")
@@ -77,7 +92,6 @@ class MyWidget(QWidget):
     def browse_directory(self, line_edit):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         line_edit.setText(directory)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
