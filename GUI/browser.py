@@ -52,8 +52,30 @@ class MyWidget(QWidget):
         image_label.setPixmap(QPixmap.fromImage(image))
         splitter.addWidget(image_label)
 
+        # ########################################## Action Box ########################################## #
+        action_box = QGroupBox()
+        action_box_layout = QHBoxLayout()
+        action_box.setLayout(action_box_layout)
+        action_box.setFixedHeight(50)
+        vbox.addWidget(action_box)
+
+        # delete button
+        delete_button = QPushButton("Delete")
+        delete_button.clicked.connect(lambda: None)
+
+        threshold_label = QLabel("Threshold:")
+        threshold_textbox = QLineEdit("200")
+        threshold_button = QPushButton("Find Dupes")
+        threshold_button.clicked.connect(lambda: None)
+
+        action_box_layout.addWidget(delete_button)
+        action_box_layout.addWidget(threshold_label)
+        action_box_layout.addWidget(threshold_textbox)
+        action_box_layout.addWidget(threshold_button)
+
         # ########################################## Form Box ############################################ #
-        form_box = QGroupBox("Form Box")
+        form_box = QGroupBox()
+        form_box.setFixedHeight(100)
         form_layout = QVBoxLayout()
         form_box.setLayout(form_layout)
         vbox.addWidget(form_box)
@@ -71,7 +93,7 @@ class MyWidget(QWidget):
         # Create the second directory lookup
         directory_layout2 = QHBoxLayout()
         label2 = QLabel("Directory 2:")
-        line_edit2 = QLineEdit()
+        line_edit2 = QLineEdit("Leave blank for single directory lookup")
         directory_button2 = QPushButton("Browse")
         directory_button2.clicked.connect(lambda: self.browse_directory(line_edit2))
         directory_layout2.addWidget(label2)
