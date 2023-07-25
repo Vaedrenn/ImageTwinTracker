@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QFrame, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QTextEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget
 
@@ -66,8 +66,13 @@ class MyWidget(QWidget):
 
         threshold_label = QLabel("Threshold:")
         threshold_label.setFixedWidth(50)
+
         threshold_textbox = QLineEdit("200")
         threshold_textbox.setFixedWidth(50)
+        threshold_textbox.setMaxLength(4)
+        validator = QIntValidator()  # Create a QIntValidator to restrict input to integers
+        threshold_textbox.setValidator(validator)  # Set the validator for the line edit
+
         threshold_button = QPushButton("Find Dupes")
         threshold_button.setFixedWidth(75)
         threshold_button.clicked.connect(lambda: None)
