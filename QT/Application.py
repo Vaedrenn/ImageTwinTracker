@@ -1,8 +1,7 @@
 import sys
-
-from PyQt5.QtGui import QImage, QPixmap, QIntValidator
+from PyQt5.QtGui import QImage, QPixmap, QIntValidator, QPalette, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory
 
 
 class MyWidget(QWidget):
@@ -11,6 +10,25 @@ class MyWidget(QWidget):
         self.initUI()
 
     def initUI(self):
+        print(QStyleFactory.keys())
+        QApplication.setStyle(QStyleFactory.create('Fusion'))
+
+        dark_palette = QPalette()
+        dark_palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
+        dark_palette.setColor(QPalette.ColorRole.WindowText, QColor(250, 250, 250))
+        dark_palette.setColor(QPalette.ColorRole.Base, QColor(35, 35, 35))
+        dark_palette.setColor(QPalette.ColorRole.AlternateBase, QColor(45, 45, 45))
+        dark_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(250, 250, 250))
+        dark_palette.setColor(QPalette.ColorRole.ToolTipText, QColor(250, 250, 250))
+        dark_palette.setColor(QPalette.ColorRole.Text, QColor(250, 250, 250))
+        dark_palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+        dark_palette.setColor(QPalette.ColorRole.ButtonText, QColor(250, 250, 250))
+        dark_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 0, 0))
+        dark_palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+        dark_palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+        dark_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(250, 250, 250))
+        self.setPalette(dark_palette)
+
         # Create a QVBoxLayout instance
         vbox = QVBoxLayout()
 
@@ -22,20 +40,10 @@ class MyWidget(QWidget):
         # Create the file menu
         file_menu = QMenu("File", self)
 
-        # Add filler actions for the file menu
-        filler_action1 = QAction("Option 1", self)
-        file_menu.addAction(filler_action1)
-
-        filler_action2 = QAction("Option 2", self)
-        file_menu.addAction(filler_action2)
-
-        filler_action3 = QAction("Option 3", self)
-        file_menu.addAction(filler_action3)
-
         # Add the file menu to the menu bar
         menu_bar.addMenu(file_menu)
 
-        # Create the splitter
+        # ############################ splitter ################################ #
         splitter = QSplitter()
         vbox.addWidget(splitter)
         # set the splitter so that the children are not collapsable
@@ -45,6 +53,10 @@ class MyWidget(QWidget):
         list_widget = QListWidget()
         splitter.addWidget(list_widget)
 
+        # Add dummy items to the list widget
+        for i in range(50):
+            list_widget.addItem(f"Item {i + 1}")
+
         # Create a blank image
         image = QImage()  # Empty QImage object
 
@@ -53,7 +65,7 @@ class MyWidget(QWidget):
         image_label.setPixmap(QPixmap.fromImage(image))
         splitter.addWidget(image_label)
 
-        # ########################################## Action Box ########################################## #
+        # ########################## Action Box ################################# #
         action_box = QGroupBox()
         action_box_layout = QHBoxLayout()
         action_box.setLayout(action_box_layout)
@@ -68,7 +80,7 @@ class MyWidget(QWidget):
         spacer = QLabel()
 
         threshold_label = QLabel("Threshold:")
-        threshold_label.setFixedWidth(50)
+        threshold_label.setFixedWidth(60)
 
         threshold_textbox = QLineEdit("200")
         threshold_textbox.setFixedWidth(50)
@@ -86,7 +98,7 @@ class MyWidget(QWidget):
         action_box_layout.addWidget(threshold_textbox)
         action_box_layout.addWidget(threshold_button)
 
-        # ########################################## Form Box ############################################ #
+        # ############################# Form Box ################################## #
         form_box = QGroupBox()
         form_box.setFixedHeight(100)
         form_layout = QVBoxLayout()
@@ -113,6 +125,7 @@ class MyWidget(QWidget):
         directory_layout2.addWidget(line_edit2)
         directory_layout2.addWidget(directory_button2)
 
+
         # Add the directory lookups to the form box
         form_layout.addLayout(directory_layout1)
         form_layout.addLayout(directory_layout2)
@@ -131,4 +144,4 @@ class MyWidget(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     widget = MyWidget()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
