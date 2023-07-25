@@ -1,8 +1,9 @@
 import sys
 
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QFrame, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QTextEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
+    QLineEdit, QAction, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget
+
 
 class MyWidget(QWidget):
     def __init__(self):
@@ -60,16 +61,18 @@ class MyWidget(QWidget):
         vbox.addWidget(action_box)
 
         # delete button
-        delete_button = QPushButton("Delete")
+        delete_button = QPushButton("Delete Selected")
         delete_button.clicked.connect(lambda: None)
-        delete_button.setFixedWidth(50)
+        delete_button.setFixedWidth(90)
+
+        spacer = QLabel()
 
         threshold_label = QLabel("Threshold:")
         threshold_label.setFixedWidth(50)
 
         threshold_textbox = QLineEdit("200")
         threshold_textbox.setFixedWidth(50)
-        threshold_textbox.setMaxLength(4)
+        threshold_textbox.setMaxLength(5)
         validator = QIntValidator()  # Create a QIntValidator to restrict input to integers
         threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
@@ -78,6 +81,7 @@ class MyWidget(QWidget):
         threshold_button.clicked.connect(lambda: None)
 
         action_box_layout.addWidget(delete_button)
+        action_box_layout.addWidget(spacer)
         action_box_layout.addWidget(threshold_label)
         action_box_layout.addWidget(threshold_textbox)
         action_box_layout.addWidget(threshold_button)
@@ -112,17 +116,17 @@ class MyWidget(QWidget):
         # Add the directory lookups to the form box
         form_layout.addLayout(directory_layout1)
         form_layout.addLayout(directory_layout2)
-
         # ################################## Set the layout for the main window ################################### #
-        self.setLayout(vbox)
 
-        self.setWindowTitle('Vertical Layout with Frames')
-        self.setGeometry(300, 300, 400, 300)
+        self.setLayout(vbox)
+        self.setWindowTitle('MSE Duplicate Image Search')
+        self.setGeometry(300, 300, 800, 600)
         self.show()
 
     def browse_directory(self, line_edit):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         line_edit.setText(directory)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
