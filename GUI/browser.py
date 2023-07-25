@@ -62,10 +62,14 @@ class MyWidget(QWidget):
         # delete button
         delete_button = QPushButton("Delete")
         delete_button.clicked.connect(lambda: None)
+        delete_button.setFixedWidth(50)
 
         threshold_label = QLabel("Threshold:")
+        threshold_label.setFixedWidth(50)
         threshold_textbox = QLineEdit("200")
+        threshold_textbox.setFixedWidth(50)
         threshold_button = QPushButton("Find Dupes")
+        threshold_button.setFixedWidth(75)
         threshold_button.clicked.connect(lambda: None)
 
         action_box_layout.addWidget(delete_button)
