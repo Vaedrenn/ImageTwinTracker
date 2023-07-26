@@ -1,7 +1,9 @@
 import sys
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator, QPalette, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView
+
+from dark_palette import create_dark_palette
 
 
 class MyWidget(QWidget):
@@ -10,23 +12,8 @@ class MyWidget(QWidget):
         self.initUI()
 
     def initUI(self):
-        print(QStyleFactory.keys())
         QApplication.setStyle(QStyleFactory.create('Fusion'))
-
-        dark_palette = QPalette()
-        dark_palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ColorRole.WindowText, QColor(250, 250, 250))
-        dark_palette.setColor(QPalette.ColorRole.Base, QColor(35, 35, 35))
-        dark_palette.setColor(QPalette.ColorRole.AlternateBase, QColor(45, 45, 45))
-        dark_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(250, 250, 250))
-        dark_palette.setColor(QPalette.ColorRole.ToolTipText, QColor(250, 250, 250))
-        dark_palette.setColor(QPalette.ColorRole.Text, QColor(250, 250, 250))
-        dark_palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ColorRole.ButtonText, QColor(250, 250, 250))
-        dark_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 0, 0))
-        dark_palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(250, 250, 250))
+        dark_palette = create_dark_palette()
         self.setPalette(dark_palette)
 
         # Create a QVBoxLayout instance
@@ -51,6 +38,7 @@ class MyWidget(QWidget):
 
         # Create the list widget
         list_widget = QListWidget()
+        list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         splitter.addWidget(list_widget)
 
         # Add dummy items to the list widget
@@ -64,6 +52,8 @@ class MyWidget(QWidget):
         image_label = QLabel()
         image_label.setPixmap(QPixmap.fromImage(image))
         splitter.addWidget(image_label)
+
+        splitter.setSizes([200, 600])
 
         # ########################## Action Box ################################# #
         action_box = QGroupBox()
@@ -124,7 +114,6 @@ class MyWidget(QWidget):
         directory_layout2.addWidget(label2)
         directory_layout2.addWidget(line_edit2)
         directory_layout2.addWidget(directory_button2)
-
 
         # Add the directory lookups to the form box
         form_layout.addLayout(directory_layout1)
