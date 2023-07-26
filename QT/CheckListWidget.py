@@ -15,10 +15,12 @@ class CheckListWidget(QListWidget):
         self.addItem(item)
 
     def keyPressEvent(self, event):
+        # on space key press swap states
         if event.key() == Qt.Key_Space:
             selected_items = self.selectedItems()
             for item in selected_items:
-                item.setCheckState(Qt.Checked)
-
-        # Call the base class implementation to handle other key events
-        super().keyPressEvent(event)
+                current_state = item.checkState()
+                if current_state == Qt.Checked:
+                    item.setCheckState(Qt.Unchecked)
+                else:
+                    item.setCheckState(Qt.Checked)
