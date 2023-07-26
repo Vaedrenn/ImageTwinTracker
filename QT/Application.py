@@ -1,7 +1,10 @@
 import sys
+
+from PyQt5 import QtCore
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView, QGridLayout
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView, QGridLayout, \
+    QAction, QListWidgetItem
 from dark_palette import create_dark_palette
 
 
@@ -15,24 +18,27 @@ class MyWidget(QWidget):
         dark_palette = create_dark_palette()
         self.setPalette(dark_palette)
 
-        # Create main layout
+        # Create main layout, put everything here
         vbox = QVBoxLayout()
 
-        # ############################ splitter ################################ #
+        # ############################ Menu  ################################ #
         menu_bar = QMenuBar(self)
-        menu_bar.setFixedHeight(24)  # Set a fixed height for the menu bar
+        menu_bar.setFixedHeight(24)
         vbox.addWidget(menu_bar)
 
         # Create the file menu
         file_menu = QMenu("File", self)
-
-        # Add the file menu to the menu bar
         menu_bar.addMenu(file_menu)
+
+        options_action = QAction("Options", self)
+        file_menu.addAction(options_action)
+
+        clear_cache = QAction("Clear Cache", self)
+        file_menu.addAction(clear_cache)
 
         # ############################ splitter ################################ #
         splitter = QSplitter()
         vbox.addWidget(splitter)
-        # set the splitter so that the children are not collapsable
         splitter.setChildrenCollapsible(False)
 
         # Create the list widget
@@ -41,8 +47,11 @@ class MyWidget(QWidget):
         splitter.addWidget(list_widget)
 
         # Add dummy items to the list widget
-        for i in range(50):
-            list_widget.addItem(f"Item {i + 1}")
+        for result in range(50):
+            item = QListWidgetItem("Item")
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            list_widget.addItem(item)
 
         # Create a blank image
         image = QImage()
@@ -61,7 +70,6 @@ class MyWidget(QWidget):
         action_box.setFixedHeight(50)
         vbox.addWidget(action_box)
 
-        # delete button
         delete_button = QPushButton("Delete Selected")
         delete_button.clicked.connect(lambda: None)
         delete_button.setFixedWidth(90)
@@ -73,8 +81,8 @@ class MyWidget(QWidget):
 
         threshold_textbox = QLineEdit("200")
         threshold_textbox.setFixedWidth(50)
-        threshold_textbox.setMaxLength(5)
-        validator = QIntValidator()  # Create a QIntValidator to restrict input to integers
+        threshold_textbox.setMaxLength(5)  # no reason for more than 5 digits
+        validator = QIntValidator()  # restrict input to integers
         threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
         threshold_button = QPushButton("Find Dupes")
@@ -105,7 +113,7 @@ class MyWidget(QWidget):
 
         # Create the second directory lookup
         label2 = QLabel("Directory 2:")
-        line_edit2 = QLineEdit("Leave blank for single directory lookup")
+        line_edit2 = QLineEdit()
         directory_button2 = QPushButton("Browse")
         directory_button2.clicked.connect(lambda: self.browse_directory(line_edit2))
         form_layout.addWidget(label2, 1, 0)
