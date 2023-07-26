@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtGui import QImage, QPixmap, QIntValidator, QPalette, QColor
+from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView
 
