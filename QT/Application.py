@@ -1,8 +1,7 @@
 import sys
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView
-
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView, QGridLayout
 from dark_palette import create_dark_palette
 
 
@@ -16,11 +15,11 @@ class MyWidget(QWidget):
         dark_palette = create_dark_palette()
         self.setPalette(dark_palette)
 
-        # Create a QVBoxLayout instance
+        # Create main layout
         vbox = QVBoxLayout()
 
-        # Create the menu bar
-        menu_bar = QMenuBar(self)  # Set the parent widget to enable non-resizability
+        # ############################ splitter ################################ #
+        menu_bar = QMenuBar(self)
         menu_bar.setFixedHeight(24)  # Set a fixed height for the menu bar
         vbox.addWidget(menu_bar)
 
@@ -46,7 +45,7 @@ class MyWidget(QWidget):
             list_widget.addItem(f"Item {i + 1}")
 
         # Create a blank image
-        image = QImage()  # Empty QImage object
+        image = QImage()
 
         # Add the image to a label
         image_label = QLabel()
@@ -91,33 +90,28 @@ class MyWidget(QWidget):
         # ############################# Form Box ################################## #
         form_box = QGroupBox()
         form_box.setFixedHeight(100)
-        form_layout = QVBoxLayout()
+        form_layout = QGridLayout()
         form_box.setLayout(form_layout)
         vbox.addWidget(form_box)
 
         # Create the first directory lookup
-        directory_layout1 = QHBoxLayout()
         label1 = QLabel("Directory 1:")
         line_edit1 = QLineEdit()
         directory_button1 = QPushButton("Browse")
         directory_button1.clicked.connect(lambda: self.browse_directory(line_edit1))
-        directory_layout1.addWidget(label1)
-        directory_layout1.addWidget(line_edit1)
-        directory_layout1.addWidget(directory_button1)
+        form_layout.addWidget(label1, 0, 0)
+        form_layout.addWidget(line_edit1, 0, 1)
+        form_layout.addWidget(directory_button1, 0, 2)
 
         # Create the second directory lookup
-        directory_layout2 = QHBoxLayout()
         label2 = QLabel("Directory 2:")
         line_edit2 = QLineEdit("Leave blank for single directory lookup")
         directory_button2 = QPushButton("Browse")
         directory_button2.clicked.connect(lambda: self.browse_directory(line_edit2))
-        directory_layout2.addWidget(label2)
-        directory_layout2.addWidget(line_edit2)
-        directory_layout2.addWidget(directory_button2)
+        form_layout.addWidget(label2, 1, 0)
+        form_layout.addWidget(line_edit2, 1, 1)
+        form_layout.addWidget(directory_button2, 1, 2)
 
-        # Add the directory lookups to the form box
-        form_layout.addLayout(directory_layout1)
-        form_layout.addLayout(directory_layout2)
         # ################################## Set the layout for the main window ################################### #
 
         self.setLayout(vbox)
