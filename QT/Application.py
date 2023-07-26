@@ -1,23 +1,48 @@
+import json
 import sys
 
-from PyQt5 import QtCore
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView, QGridLayout, \
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, \
     QAction, QListWidgetItem
-from dark_palette import create_dark_palette
+
 import CheckListWidget
+from QT.Options import OptionsDialog
+from QT.light_palette import create_light_palette
+from dark_palette import create_dark_palette
 
 
 class MyWidget(QWidget):
     def __init__(self):
         super().__init__()
+        self.preferences = {}  # Store preferences as a class attribute
+        self.load_preferences()  # Load preferences from the file
         self.initUI()
+
+    def load_preferences(self):
+        try:
+            with open('pref.json', 'r') as file:
+                self.preferences = json.load(file)
+        except FileNotFoundError:
+            print("Creating preferences file")
+            # If the preferences file doesn't exist, create a default set of preferences
+            self.preferences = {
+                'Threads': 1,
+                'CUDA': False,
+                'Dark': True,
+                # Add more preferences as needed
+            }
+            with open("pref.json", "w") as file:
+                json.dump(self.preferences, file, indent=4)
 
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Fusion'))
-        dark_palette = create_dark_palette()
-        self.setPalette(dark_palette)
+        if self.preferences.get('Dark') is True:
+            dark_palette = create_dark_palette()
+            self.setPalette(dark_palette)
+        else:
+            light_palette = create_light_palette()
+            self.setPalette(light_palette)
 
         # Create main layout, put everything here
         vbox = QVBoxLayout()
@@ -32,6 +57,7 @@ class MyWidget(QWidget):
         menu_bar.addMenu(file_menu)
 
         options_action = QAction("Options", self)
+        options_action.triggered.connect(self.show_options_dialog)
         file_menu.addAction(options_action)
 
         clear_cache = QAction("Clear Cache", self)
@@ -49,8 +75,6 @@ class MyWidget(QWidget):
         # Checklist with dummy vars
         for i in range(50):
             item = QListWidgetItem(f"Item {i + 1}")
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
             list_widget.addItem(item)
 
         # Create a blank image
@@ -126,6 +150,11 @@ class MyWidget(QWidget):
         self.setWindowTitle('MSE Duplicate Image Search')
         self.setGeometry(300, 300, 800, 600)
         self.show()
+
+    def show_options_dialog(self):
+        options_dialog = OptionsDialog(self.preferences)
+        options_dialog.setWindowTitle("Options")
+        options_dialog.exec_()
 
     def browse_directory(self, line_edit):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory")
