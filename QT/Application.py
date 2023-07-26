@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplit
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QListWidget, QStyleFactory, QAbstractItemView, QGridLayout, \
     QAction, QListWidgetItem
 from dark_palette import create_dark_palette
+import CheckListWidget
 
 
 class MyWidget(QWidget):
@@ -42,13 +43,12 @@ class MyWidget(QWidget):
         splitter.setChildrenCollapsible(False)
 
         # Create the list widget
-        list_widget = QListWidget()
-        list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        list_widget = CheckListWidget.CheckListWidget()
         splitter.addWidget(list_widget)
 
-        # Add dummy items to the list widget
-        for result in range(50):
-            item = QListWidgetItem("Item")
+        # Checklist with dummy vars
+        for i in range(50):
+            item = QListWidgetItem(f"Item {i + 1}")
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             item.setCheckState(QtCore.Qt.Unchecked)
             list_widget.addItem(item)
