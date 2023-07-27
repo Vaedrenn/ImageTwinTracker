@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import CheckListWidget
 
@@ -9,6 +10,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplit
 from QT.Options import OptionsDialog
 from light_palette import create_light_palette
 from dark_palette import create_dark_palette
+import delete
 
 
 class MainWidget(QWidget):
@@ -174,6 +176,10 @@ class MainWidget(QWidget):
 
     def delete_selected(self):
         # Todo Implementation: Call send to trash
+        file_list = self.list_widget.getCheckedRows()
+        for file in file_list:
+            if os.path.isfile(file):
+                delete.deletefile(file)
 
         # remove rows from list_widget
         self.list_widget.removeCheckedRows()
