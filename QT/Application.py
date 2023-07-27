@@ -1,24 +1,27 @@
 import json
 import sys
+import CheckListWidget
 
 from PyQt5.QtGui import QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, \
-    QAction, QListWidgetItem
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QListWidgetItem
 
-import CheckListWidget
 from QT.Options import OptionsDialog
-from QT.light_palette import create_light_palette
+from light_palette import create_light_palette
 from dark_palette import create_dark_palette
 
 
-class MyWidget(QWidget):
+class MainWidget(QWidget):
     def __init__(self):
         super().__init__()
+        # Define the class attributes for input fields
+        self.dir_line2 = None
+        self.threshold_textbox = None
+        self.dir_line1 = None
+        self.list_widget = None
         self.preferences = {}  # Store preferences as a class attribute
         self.load_preferences()  # Load preferences from the file
         self.initUI()
-
     def load_preferences(self):
         try:
             with open('pref.json', 'r') as file:
@@ -29,6 +32,7 @@ class MyWidget(QWidget):
             self.preferences = {
                 'Threads': 1,
                 'CUDA': False,
+                'VRAM': 1024,
                 'Dark': True,
                 # Add more preferences as needed
             }
@@ -69,13 +73,8 @@ class MyWidget(QWidget):
         splitter.setChildrenCollapsible(False)
 
         # Create the list widget
-        list_widget = CheckListWidget.CheckListWidget()
-        splitter.addWidget(list_widget)
-
-        # Checklist with dummy vars
-        for i in range(50):
-            item = QListWidgetItem(f"Item {i + 1}")
-            list_widget.addItem(item)
+        self.list_widget = CheckListWidget.CheckListWidget()
+        splitter.addWidget(self.list_widget)
 
         # Create a blank image
         image = QImage()
@@ -84,8 +83,14 @@ class MyWidget(QWidget):
         image_label = QLabel()
         image_label.setPixmap(QPixmap.fromImage(image))
         splitter.addWidget(image_label)
-
         splitter.setSizes([200, 600])
+
+        # Checklist with dummy vars
+        for i in range(50):
+            item = QListWidgetItem(f"Item {i + 1}")
+            self.list_widget.addItem(item)
+            if not i%10:
+                self.list_widget.addSpacer()
 
         # ########################## Action Box ################################# #
         action_box = QGroupBox()
@@ -95,7 +100,7 @@ class MyWidget(QWidget):
         vbox.addWidget(action_box)
 
         delete_button = QPushButton("Delete Selected")
-        delete_button.clicked.connect(lambda: None)
+        delete_button.clicked.connect(lambda: self.delete_selected())
         delete_button.setFixedWidth(90)
 
         spacer = QLabel()
@@ -103,20 +108,20 @@ class MyWidget(QWidget):
         threshold_label = QLabel("Threshold:")
         threshold_label.setFixedWidth(60)
 
-        threshold_textbox = QLineEdit("200")
-        threshold_textbox.setFixedWidth(50)
-        threshold_textbox.setMaxLength(5)  # no reason for more than 5 digits
+        self.threshold_textbox = QLineEdit("200")
+        self.threshold_textbox.setFixedWidth(50)
+        self.threshold_textbox.setMaxLength(5)  # no reason for more than 5 digits
         validator = QIntValidator()  # restrict input to integers
-        threshold_textbox.setValidator(validator)  # Set the validator for the line edit
+        self.threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
         threshold_button = QPushButton("Find Dupes")
         threshold_button.setFixedWidth(75)
-        threshold_button.clicked.connect(lambda: None)
+        threshold_button.clicked.connect(lambda: self.find_dupes())
 
         action_box_layout.addWidget(delete_button)
         action_box_layout.addWidget(spacer)
         action_box_layout.addWidget(threshold_label)
-        action_box_layout.addWidget(threshold_textbox)
+        action_box_layout.addWidget(self.threshold_textbox)
         action_box_layout.addWidget(threshold_button)
 
         # ############################# Form Box ################################## #
@@ -127,21 +132,22 @@ class MyWidget(QWidget):
         vbox.addWidget(form_box)
 
         # Create the first directory lookup
-        label1 = QLabel("Directory 1:")
-        line_edit1 = QLineEdit()
+        label1 = QLabel("Directory 1:")  # Make it a class attribute using "self."
+        self.dir_line1 = QLineEdit()  # Make it a class attribute using "self."
         directory_button1 = QPushButton("Browse")
-        directory_button1.clicked.connect(lambda: self.browse_directory(line_edit1))
+        directory_button1.clicked.connect(lambda: self.browse_directory(self.dir_line1))
         form_layout.addWidget(label1, 0, 0)
-        form_layout.addWidget(line_edit1, 0, 1)
+        form_layout.addWidget(self.dir_line1, 0, 1)
         form_layout.addWidget(directory_button1, 0, 2)
 
         # Create the second directory lookup
-        label2 = QLabel("Directory 2:")
-        line_edit2 = QLineEdit()
+        label2 = QLabel("Directory 2:")  # Make it a class attribute using "self."
+        self.dir_line2 = QLineEdit()  # Make it a class attribute using "self."
+        self.dir_line2.setPlaceholderText(" Leave blank for single directory lookup")
         directory_button2 = QPushButton("Browse")
-        directory_button2.clicked.connect(lambda: self.browse_directory(line_edit2))
+        directory_button2.clicked.connect(lambda: self.browse_directory(self.dir_line2))
         form_layout.addWidget(label2, 1, 0)
-        form_layout.addWidget(line_edit2, 1, 1)
+        form_layout.addWidget(self.dir_line2, 1, 1)
         form_layout.addWidget(directory_button2, 1, 2)
 
         # ################################## Set the layout for the main window ################################### #
@@ -160,8 +166,20 @@ class MyWidget(QWidget):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         line_edit.setText(directory)
 
+    def find_dupes(self):
+        dir1 = self.dir_line1.text()  # Get the text from the input field
+        dir2 = self.dir_line2.text()  # Get the text from the input field
+        threshold = self.threshold_textbox.text()  # Get the text from the input field
+        # Todo Implementation: Call find dupes function
+
+    def delete_selected(self):
+        # Todo Implementation: Call send to trash
+
+        # remove rows from list_widget
+        self.list_widget.removeCheckedRows()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    widget = MyWidget()
+    widget = MainWidget()
     sys.exit(app.exec())
