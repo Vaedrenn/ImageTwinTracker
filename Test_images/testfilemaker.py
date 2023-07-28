@@ -2,7 +2,7 @@ import os
 import random
 from PIL import Image
 
-path = r"Test_images\Dupe test"
+path = r"Dupe test"
 
 
 # main driver function
