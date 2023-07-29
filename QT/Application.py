@@ -182,11 +182,12 @@ class MainWidget(QWidget):
         for img in img_list:
             print(img)
         results = find_dupes(img_list, threads, threshold=200)
+
         if results:
             self.list_widget.clear()
             for dupes in results:
-                for a in dupes:
-                    a.display_path()
+                for img in dupes:
+                    self.list_widget.addItem(img.file_path)
         
 
 
