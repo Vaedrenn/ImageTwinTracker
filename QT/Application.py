@@ -1,18 +1,17 @@
 import json
 import os
 import sys
-import CheckListWidget
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QImage, QPixmap, QIntValidator
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QListWidgetItem, \
-    QSizePolicy
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
 
-
+import CheckListWidget
 from QT.Options import OptionsDialog
 from SearchMse.find_dupes import find_dupes, create_img_list
-from light_palette import create_light_palette
 from dark_palette import create_dark_palette
+from light_palette import create_light_palette
 
 
 class MainWidget(QWidget):
@@ -211,9 +210,7 @@ class MainWidget(QWidget):
             index = self.image_list_widget.row(item)
             if index != self.current_image_index:
                 self.current_image_index = index
-                print(index)
                 image_path = self.images[self.current_image_index]
-                print(image_path)
                 if image_path is not None:
                         self.update_image(image_path)
         except Exception as e: print(e)
@@ -229,8 +226,7 @@ class MainWidget(QWidget):
 
             image_label = QLabel(self.image_label_widget)
             image_label.setAlignment(Qt.AlignCenter)
-            print(self.image_label_widget.size())
-            print(pixmap.size())
+            # scale down image if it's bigger than the container
             if pixmap.width() > self.image_label_widget.width() or pixmap.height() > self.image_label_widget.height():
                 image_label.setPixmap(pixmap.scaled(self.image_label_widget.size(), Qt.AspectRatioMode.KeepAspectRatio))
             else:
@@ -238,6 +234,7 @@ class MainWidget(QWidget):
             self.image_label_layout.addWidget(image_label)
 
         except Exception as e: print(e)
+
 
 
 if __name__ == '__main__':

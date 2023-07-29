@@ -1,4 +1,5 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 
 
@@ -63,3 +64,17 @@ class CheckListWidget(QListWidget):
         # do default action
         else:
             super().keyPressEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
+        try:
+            item = self.itemAt(event.pos())
+            if item and item.flags() & Qt.ItemIsSelectable:
+                file_path = item.text()
+                if file_path:
+                    QDesktopServices.openUrl(QUrl.fromLocalFile(file_path))
+
+            # Call the base class implementation to allow for additional processing
+            super().mouseDoubleClickEvent(event)
+
+        except Exception as e: print(e)
+
