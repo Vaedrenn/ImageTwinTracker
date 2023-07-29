@@ -42,6 +42,7 @@ class CheckListWidget(QListWidget):
         for i in checked_rows:
             self.takeItem(i)
 
+
     def keyPressEvent(self, event):
         # on space key press swap states
         if event.key() == Qt.Key_Space:

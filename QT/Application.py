@@ -8,9 +8,11 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplit
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QListWidgetItem
 
 from QT.Options import OptionsDialog
+from SearchMse.find_dupes import find_dupes, create_img_list, mse_search
 from light_palette import create_light_palette
 from dark_palette import create_dark_palette
 import delete
+import SearchMse
 
 
 class MainWidget(QWidget):
@@ -170,9 +172,23 @@ class MainWidget(QWidget):
 
     def find_dupes(self):
         dir1 = self.dir_line1.text()  # Get the text from the input field
+        if not dir1:
+            return
         dir2 = self.dir_line2.text()  # Get the text from the input field
         threshold = self.threshold_textbox.text()  # Get the text from the input field
-        # Todo Implementation: Call find dupes function
+        threads = self.preferences.get('Threads')
+        img_list = create_img_list(dir1, threads)
+        print("successfully created image list")
+        for img in img_list:
+            print(img)
+        results = find_dupes(img_list, threads, threshold=200)
+        if results:
+            self.list_widget.clear()
+            for dupes in results:
+                for a in dupes:
+                    a.display_path()
+        
+
 
     def delete_selected(self):
         # Todo Implementation: Call send to trash

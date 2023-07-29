@@ -23,7 +23,7 @@ class ImgData:
 
 
 # creates a list of tensors for a given directory using multiprocessing
-def create_img_list(root, px_size=50, num_processes=4):
+def create_img_list(root, num_processes=4):
     landscape = []
     portrait = []
     img_list = (landscape, portrait)
@@ -80,10 +80,12 @@ def read_and_resize_image(file):
 def find_dupes(img_list, threads, threshold=200):
     dupe_matrix = []
 
+    if not img_list:
+        return dupe_matrix
+
     # if multiprocessing is enabled
     if threads >= 2:
         with multiprocessing.Pool(processes=2) as pool:
-            # Todo: make it pass in threshold
             ret_matrix = pool.starmap(mse_search, [(x, threshold) for x in img_list])
             for sublist in ret_matrix:  # 2
                 for i in sublist:  #

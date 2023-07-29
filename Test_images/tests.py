@@ -42,23 +42,6 @@ class TestCreate(TestCase):
         self.assertFalse(dud in portrait)
 
 
-def mse(first, second):
-    tensor1 = first.tensor
-    tensor2 = second.tensor
-
-    try:
-        err = np.sum((tensor1.astype("float") - tensor2.astype("float")) ** 2)
-        err /= float(tensor1.shape[0] * tensor1.shape[1])
-        return err
-    # Still want the program to continue, don't count the images as dupes and continue
-    except ValueError:
-        print("Value Error: ", first.path, second.path)
-        return 1000000
-    except AttributeError:
-        print("Attribute Error: ", first.path, second.path)
-        return 1000000
-
-
 class TestSearch(TestCase):
     # Test if mse search actually detects duplicates
     def test_dupes(self, threshold=500, root=r"Dupe test"):
