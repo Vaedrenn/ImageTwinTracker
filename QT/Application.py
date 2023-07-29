@@ -145,6 +145,7 @@ class MainWidget(QWidget):
         self.setWindowTitle('MSE Duplicate Image Search')
         self.setGeometry(300, 300, 800, 600)
         self.show()
+
     def load_preferences(self):
         try:
             with open('pref.json', 'r') as file:
@@ -154,13 +155,12 @@ class MainWidget(QWidget):
             # If the preferences file doesn't exist, create a default set of preferences
             self.preferences = {
                 'Threads': 1,
-                'CUDA': False,
-                'VRAM': 1024,
                 'Dark': True,
                 # Add more preferences as needed
             }
             with open("pref.json", "w") as file:
                 json.dump(self.preferences, file, indent=4)
+
     def show_options_dialog(self):
         options_dialog = OptionsDialog(self.preferences)
         options_dialog.setWindowTitle("Options")
@@ -175,7 +175,7 @@ class MainWidget(QWidget):
             dir1 = self.dir_line1.text()  # Get the text from the input field
             if not dir1:
                 return
-            #dir2 = self.dir_line2.text()  # Get the text from the input field
+            # dir2 = self.dir_line2.text()  # Get the text from the input field
             threshold = self.threshold_textbox.text()
             # Get the text from the input field
             threads = self.preferences.get('Threads')
@@ -191,8 +191,8 @@ class MainWidget(QWidget):
                         self.images.append(img.file_path)
                     self.image_list_widget.addSpacer()
                     self.images.append(None)
-        except Exception as e: print(e)
-
+        except Exception as e:
+            print(e)
 
     def delete_selected(self):
         try:
@@ -203,7 +203,8 @@ class MainWidget(QWidget):
                     pass
             # remove rows from list_widget
             self.image_list_widget.removeCheckedRows()
-        except Exception as e: print(e)
+        except Exception as e:
+            print(e)
 
     def show_selected_image(self, item):
         try:
@@ -212,8 +213,9 @@ class MainWidget(QWidget):
                 self.current_image_index = index
                 image_path = self.images[self.current_image_index]
                 if image_path is not None:
-                        self.update_image(image_path)
-        except Exception as e: print(e)
+                    self.update_image(image_path)
+        except Exception as e:
+            print(e)
 
     def update_image(self, path):
         try:
@@ -233,8 +235,8 @@ class MainWidget(QWidget):
                 image_label.setPixmap(pixmap)
             self.image_label_layout.addWidget(image_label)
 
-        except Exception as e: print(e)
-
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':

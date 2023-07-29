@@ -19,14 +19,9 @@ class OptionsDialog(QDialog):
 
         # Create QLineEdit for the "Threads" option
         threads_entry = QLineEdit()
-        threads_entry.setValidator(QIntValidator(1, 99))  # Set the validator for 2-digit integers
+        threads_entry.setValidator(QIntValidator(1, 12))  # Set the validator for 2-digit integers
         threads_entry.setText(str(self.preferences.get('Threads', 1)))
         layout.addWidget(threads_entry)
-
-        # Create QCheckBox for the "CUDA" option
-        cuda_checkbox = QCheckBox("Use CUDA")
-        cuda_checkbox.setChecked(self.preferences.get('CUDA'))
-        layout.addWidget(cuda_checkbox)
 
         # Create QCheckBox for the "Dark Theme" option
         dark_theme_checkbox = QCheckBox("Dark Theme")
