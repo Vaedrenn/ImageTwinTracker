@@ -175,28 +175,26 @@ class MainWidget(QWidget):
         if not dir1:
             return
         dir2 = self.dir_line2.text()  # Get the text from the input field
-        threshold = self.threshold_textbox.text()  # Get the text from the input field
+        threshold = self.threshold_textbox.text()
+        # Get the text from the input field
         threads = self.preferences.get('Threads')
         img_list = create_img_list(dir1, threads)
-        print("successfully created image list")
-        for img in img_list:
-            print(img)
-        results = find_dupes(img_list, threads, threshold=200)
 
+        results = find_dupes(img_list, threads, int(threshold))
         if results:
             self.list_widget.clear()
             for dupes in results:
                 for img in dupes:
                     self.list_widget.addItem(img.file_path)
-        
-
+                self.list_widget.addSpacer()
 
     def delete_selected(self):
         # Todo Implementation: Call send to trash
         file_list = self.list_widget.getCheckedRows()
         for file in file_list:
             if os.path.isfile(file):
-                delete.deletefile(file)
+                # delete.deletefile(file)
+                pass
 
         # remove rows from list_widget
         self.list_widget.removeCheckedRows()
