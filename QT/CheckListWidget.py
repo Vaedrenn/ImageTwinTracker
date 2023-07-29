@@ -6,6 +6,8 @@ class CheckListWidget(QListWidget):
     def __init__(self):
         super().__init__()
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)  # Allows ctrl and  shift click selection
+        self.images = []
+        self.current_image_index = 0
 
     def addItem(self, item_text):
         item = QListWidgetItem(item_text)
