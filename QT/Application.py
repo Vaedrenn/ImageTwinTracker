@@ -68,12 +68,12 @@ class MainWidget(QWidget):
         # Image label
         self.image_label_widget = QWidget(self)
         # make the label expand on resize
-        self.image_label_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.image_label_layout = QHBoxLayout(self.image_label_widget)
         self.image_label_layout.setContentsMargins(0, 0, 0, 0)
 
         # The image list
         self.image_list_widget = CheckListWidget.CheckListWidget()
+        self.image_label_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.image_list_widget.itemClicked.connect(self.show_selected_image)  # on click change image
 
         splitter.addWidget(self.image_list_widget)
@@ -172,47 +172,53 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
-        dir1 = self.dir_line1.text()  # Get the text from the input field
-        if not dir1:
-            return
-        #dir2 = self.dir_line2.text()  # Get the text from the input field
-        threshold = self.threshold_textbox.text()
-        # Get the text from the input field
-        threads = self.preferences.get('Threads')
-        img_list = create_img_list(dir1, threads)
+        try:
+            dir1 = self.dir_line1.text()  # Get the text from the input field
+            if not dir1:
+                return
+            #dir2 = self.dir_line2.text()  # Get the text from the input field
+            threshold = self.threshold_textbox.text()
+            # Get the text from the input field
+            threads = self.preferences.get('Threads')
+            img_list = create_img_list(dir1, threads)
 
-        results = find_dupes(img_list, threads, int(threshold))
-        if results:
-            self.image_list_widget.clear()
-            for dupes in results:
-                for img in dupes:
-                    self.image_list_widget.addItem(img.file_path)
-                    self.images.append(img.file_path)
-                self.image_list_widget.addSpacer()
-                self.images.append(None)
+            results = find_dupes(img_list, threads, int(threshold))
+            if results:
+                self.images = []
+                self.image_list_widget.clear()
+                for dupes in results:
+                    for img in dupes:
+                        self.image_list_widget.addItem(img.file_path)
+                        self.images.append(img.file_path)
+                    self.image_list_widget.addSpacer()
+                    self.images.append(None)
+        except Exception as e: print(e)
+
 
     def delete_selected(self):
-        file_list = self.list_widget.getCheckedRows()
-        for file in file_list:
-            if os.path.isfile(file):
-                # delete.deletefile(file)
-                pass
-        # remove rows from list_widget
-        self.list_widget.removeCheckedRows()
+        try:
+            file_list = self.image_list_widget.getCheckedRows()
+            for file in file_list:
+                if os.path.isfile(file):
+                    # delete.deletefile(file)
+                    pass
+            # remove rows from list_widget
+            self.image_list_widget.removeCheckedRows()
+        except Exception as e: print(e)
 
     def show_selected_image(self, item):
-        index = self.image_list_widget.row(item)
-        if index != self.current_image_index:
-            self.current_image_index = index
-            print(index)
-            image_path = self.images[self.current_image_index]
-            print(image_path)
-            if image_path is not None:
-                try:
-                    self.updateImage(image_path)
-                except Exception as e: print(e)
+        try:
+            index = self.image_list_widget.row(item)
+            if index != self.current_image_index:
+                self.current_image_index = index
+                print(index)
+                image_path = self.images[self.current_image_index]
+                print(image_path)
+                if image_path is not None:
+                        self.update_image(image_path)
+        except Exception as e: print(e)
 
-    def updateImage(self, path):
+    def update_image(self, path):
         try:
             image_path = self.images[self.current_image_index]
             pixmap = QPixmap(image_path)  # open image as pixmap
@@ -223,7 +229,12 @@ class MainWidget(QWidget):
 
             image_label = QLabel(self.image_label_widget)
             image_label.setAlignment(Qt.AlignCenter)
-            image_label.setPixmap(pixmap.scaled(self.image_label_widget.size(), Qt.AspectRatioMode.KeepAspectRatio))
+            print(self.image_label_widget.size())
+            print(pixmap.size())
+            if pixmap.width() > self.image_label_widget.width() or pixmap.height() > self.image_label_widget.height():
+                image_label.setPixmap(pixmap.scaled(self.image_label_widget.size(), Qt.AspectRatioMode.KeepAspectRatio))
+            else:
+                image_label.setPixmap(pixmap)
             self.image_label_layout.addWidget(image_label)
 
         except Exception as e: print(e)
