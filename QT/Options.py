@@ -1,5 +1,6 @@
 import json
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QCheckBox, QLabel, QLineEdit, QDialogButtonBox, QVBoxLayout, QDialog
 
@@ -11,6 +12,8 @@ class OptionsDialog(QDialog):
         self.initUI()
 
     def initUI(self):
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+
         layout = QVBoxLayout()
 
         # Create QLabel for the "Threads" option
@@ -43,9 +46,6 @@ class OptionsDialog(QDialog):
         threads_value = threads_entry.text()
         if threads_value.isdigit():
             self.preferences['Threads'] = int(threads_value)
-
-        cuda_checkbox = self.findChild(QCheckBox)
-        self.preferences['CUDA'] = cuda_checkbox.isChecked()
 
         dark_theme_checkbox = self.findChild(QCheckBox, "DarkThemeCheckbox")
         self.preferences['Dark'] = dark_theme_checkbox.isChecked()

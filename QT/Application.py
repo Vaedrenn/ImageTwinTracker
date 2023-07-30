@@ -195,7 +195,6 @@ class MainWidget(QWidget):
             print(e)
 
     def delete_selected(self):
-        return
         try:
             files = self.image_list_widget.getCheckedRows()
             delete_dialog = DeleteDialog(files)
