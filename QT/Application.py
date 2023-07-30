@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
@@ -12,7 +12,7 @@ from QT.Options import OptionsDialog
 from SearchMse.find_dupes import find_dupes, create_img_list
 from dark_palette import create_dark_palette
 from light_palette import create_light_palette
-
+from DeletePopUp  import DeleteDialog
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -195,16 +195,13 @@ class MainWidget(QWidget):
             print(e)
 
     def delete_selected(self):
+        return
         try:
-            file_list = self.image_list_widget.getCheckedRows()
-            for file in file_list:
-                if os.path.isfile(file):
-                    # delete.deletefile(file)
-                    pass
-            # remove rows from list_widget
-            self.image_list_widget.removeCheckedRows()
-        except Exception as e:
-            print(e)
+            files = self.image_list_widget.getCheckedRows()
+            delete_dialog = DeleteDialog(files)
+            delete_dialog.exec_()
+        except Exception as E:
+            print(E)
 
     def show_selected_image(self, item):
         try:
@@ -237,6 +234,38 @@ class MainWidget(QWidget):
 
         except Exception as e:
             print(e)
+
+    def eventFilter(self, obj, event):
+        # arrow key navigation
+        if obj == self.image_list_widget and event.type() == QEvent.KeyPress:
+            key = event.key()
+            if key == Qt.Key_Up:
+                self.navigate(-1)
+                return True
+            elif key == Qt.Key_Down:
+                self.navigate(1)
+                return True
+
+        return super().eventFilter(obj, event)
+
+    def navigate(self, direction):
+        try:
+            new_index = self.current_image_index + direction
+            if 0 <= new_index < len(self.images):
+                self.current_image_index = new_index
+                self.image_list_widget.setCurrentIndex(self.image_list_widget.model().index(new_index, 0))
+                image_path = self.images[self.current_image_index]
+                if image_path is not None:
+                    self.update_image(image_path)
+
+        except Exception as E:
+            print(E)
+    def showEvent(self, event):
+        self.image_list_widget.installEventFilter(self)
+
+    def hideEvent(self, event):
+        self.image_list_widget.removeEventFilter(self)
+
 
 
 if __name__ == '__main__':
