@@ -1,6 +1,6 @@
-import send2trash
 from PyQt5.QtWidgets import QLabel, QDialogButtonBox, QVBoxLayout, QDialog
 from PyQt5.QtCore import Qt
+from send2trash import send2trash
 
 
 
@@ -36,11 +36,11 @@ class DeleteDialog(QDialog):
         super().accept()
 
     def deletefiles(self, files):
-
         try:
-            for file in files:
-                print(file)
-                send2trash.send2trash(file)
+            # remove whatever this is
+            raw_files = [f.replace(r'\\\\?\\', '') for f in files]
+            # Delete the files using send2trash
+            for f in raw_files:
+                send2trash(f)
         except Exception as E:
             print(E)
-        return 1

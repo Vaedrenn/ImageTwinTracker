@@ -120,7 +120,7 @@ class MainWidget(QWidget):
 
         # Create the first directory lookup
         label1 = QLabel("Directory 1:")
-        self.dir_line1 = QLineEdit(r"Test_images\Dupe test")  # Make it a class attribute using "self."
+        self.dir_line1 = QLineEdit(r"Test_images/Deletion test")  # Make it a class attribute using "self."
         directory_button1 = QPushButton("Browse")
         directory_button1.clicked.connect(lambda: self.browse_directory(self.dir_line1))
         form_layout.addWidget(label1, 0, 0)
@@ -196,7 +196,10 @@ class MainWidget(QWidget):
 
     def delete_selected(self):
         try:
-            files = self.image_list_widget.getCheckedRows()
+            file_indexes = self.image_list_widget.getCheckedRows()
+            files = []
+            for f in file_indexes:
+                files.append(self.images[f])
             delete_dialog = DeleteDialog(files)
             delete_dialog.exec_()
         except Exception as E:
@@ -259,12 +262,12 @@ class MainWidget(QWidget):
 
         except Exception as E:
             print(E)
+
     def showEvent(self, event):
         self.image_list_widget.installEventFilter(self)
 
     def hideEvent(self, event):
         self.image_list_widget.removeEventFilter(self)
-
 
 
 if __name__ == '__main__':
