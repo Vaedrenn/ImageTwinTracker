@@ -46,7 +46,7 @@ class DeleteDialog(QDialog):
             cleaned = []
             for f in files:
                 cleaned.append(os.path.normpath(f))
-            send2trash(files)
+            send2trash(cleaned)
 
         except Exception as E:
             self.show_error_message(str(E))
