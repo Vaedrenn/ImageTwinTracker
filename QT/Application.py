@@ -77,7 +77,7 @@ class MainWidget(QWidget):
 
         splitter.addWidget(self.image_list_widget)
         splitter.addWidget(self.image_label_widget)
-        splitter.setSizes([200, 600])
+        splitter.setSizes([500, 1000])
 
         # ########################## Action Box ################################# #
         action_box = QGroupBox()
@@ -120,7 +120,7 @@ class MainWidget(QWidget):
 
         # Create the first directory lookup
         label1 = QLabel("Directory 1:")
-        self.dir_line1 = QLineEdit(r"Test_images/Dupe test 3/Test 2")  # Make it a class attribute using "self."
+        self.dir_line1 = QLineEdit(r"Test_images/Dupe test")  # Make it a class attribute using "self."
         directory_button1 = QPushButton("Browse")
         directory_button1.clicked.connect(lambda: self.browse_directory(self.dir_line1))
         form_layout.addWidget(label1, 0, 0)
@@ -143,7 +143,7 @@ class MainWidget(QWidget):
 
         self.setLayout(vbox)
         self.setWindowTitle('MSE Duplicate Image Search')
-        self.setGeometry(300, 300, 800, 600)
+        self.setGeometry(200, 200, 1024, 768)
         self.show()
 
     def load_preferences(self):
@@ -190,7 +190,7 @@ class MainWidget(QWidget):
                         self.image_list_widget.addItem(img.file_path)
                         self.images.append(img.file_path)
                     self.image_list_widget.addSpacer()
-                    self.images.append("")
+                    self.images.append(None)
         except Exception as e:
             print(e)
 
@@ -269,6 +269,8 @@ class MainWidget(QWidget):
                 image_path = self.images[self.current_image_index]
                 if image_path is not None:
                     self.update_image(image_path)
+                else:
+                    self.navigate(direction)
 
         except Exception as E:
             print(E)
