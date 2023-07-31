@@ -5,7 +5,7 @@ import sys
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy, QDialog
 
 import CheckListWidget
 from QT.Options import OptionsDialog
@@ -198,10 +198,22 @@ class MainWidget(QWidget):
         try:
             file_indexes = self.image_list_widget.getCheckedRows()
             files = []
+
             for f in file_indexes:
                 files.append(self.images[f])
             delete_dialog = DeleteDialog(files)
-            delete_dialog.exec_()
+            result = delete_dialog.exec_()
+
+            if result == QDialog.Accepted:
+                self.image_list_widget.removeCheckedRows()
+                for row in file_indexes:
+                    s = self.images.pop(row)
+                    print("popped : ", s)
+
+                for img in self.images:
+                    print(img)
+
+
         except Exception as E:
             print(E)
 

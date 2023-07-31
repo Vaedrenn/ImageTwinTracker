@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QLabel, QDialogButtonBox, QVBoxLayout, QDialog
+import os
+
+from PyQt5.QtWidgets import QLabel, QDialogButtonBox, QVBoxLayout, QDialog, QMessageBox
 from PyQt5.QtCore import Qt
 from send2trash import send2trash
 
@@ -32,15 +34,31 @@ class DeleteDialog(QDialog):
         self.setLayout(layout)
 
     def accept(self):
-        self.deletefiles(self.files)
+        if self.deletefiles(self.files) is False:
+            self.reject()
+            return QDialog.Rejected
         super().accept()
+
 
     def deletefiles(self, files):
         try:
-            # remove whatever this is
-            raw_files = [f.replace(r'\\\\?\\', '') for f in files]
-            # Delete the files using send2trash
-            for f in raw_files:
-                send2trash(f)
+            # fixed file not found error with send2trash
+            cleaned = []
+            for f in files:
+                cleaned.append(os.path.normpath(f))
+            send2trash(files)
+
         except Exception as E:
+            self.show_error_message(str(E))
             print(E)
+            return False
+        return True
+
+    def show_error_message(self, error_text):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setWindowTitle('Error')
+        msg.setText('An exception has occurred:')
+        msg.setInformativeText(error_text)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
