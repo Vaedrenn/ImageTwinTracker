@@ -39,9 +39,11 @@ class CheckListWidget(QListWidget):
     def removeCheckedRows(self):
         status = Qt.Checked
         checked_rows = self.__getRows(status)
+        offset = 0  # Offset to adjust for removed items
+
         for i in checked_rows:
-            self.item(i).setCheckState(Qt.Unchecked)
-            self.takeItem(i)
+            self.takeItem(i - offset)
+            offset += 1
 
     def keyPressEvent(self, event):
         # on space key press swap states

@@ -207,15 +207,10 @@ class MainWidget(QWidget):
             if result == QDialog.Accepted:
                 self.image_list_widget.removeCheckedRows()
                 for row in file_indexes:
-                    s = self.images.pop(row)
-                    print("popped : ", s)
-
-                for img in self.images:
-                    print(img)
-
+                    self.images.pop(row)
 
         except Exception as E:
-            print(E)
+            print("Exception in Application.delete_selected: ",E)
 
     def show_selected_image(self, item):
         try:

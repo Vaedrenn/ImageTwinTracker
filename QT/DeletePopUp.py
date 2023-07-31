@@ -50,7 +50,7 @@ class DeleteDialog(QDialog):
 
         except Exception as E:
             self.show_error_message(str(E))
-            print(E)
+            print("Exception in DeletePopup.deletefiles: ", E)
             return False
         return True
 
