@@ -4,13 +4,11 @@ from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy, QDialog
-
-from GUI import CheckListWidget
+from GUI.CheckListWidget import CheckListWidget
 from GUI.DeletePopUp import DeleteDialog
 from GUI.Options import OptionsDialog
 from GUI.dark_palette import create_dark_palette
 from GUI.light_palette import create_light_palette
-
 from SearchMse.find_dupes import find_dupes, create_img_list
 
 
@@ -18,14 +16,17 @@ class MainWidget(QWidget):
     def __init__(self):
         super().__init__()
         # Define the class attributes for input fields
-        self.threshold_textbox = None
-        self.dir_line1 = None
+        self.threshold_textbox = QLineEdit("200")
+        self.dir_line1 = QLineEdit(r"Test_images/Dupe test")
 
         # Define the class attributes for splitter widgets
-        self.image_list_widget = None
-        self.image_label = None
+        self.image_list_widget = CheckListWidget()
+        self.image_label_widget = QWidget(self)
+        self.image_label_layout = QHBoxLayout(self.image_label_widget)
         self.images = []
         self.current_image_index = 0
+
+        self.threshold_button = QPushButton("Find Dupes")
 
         self.preferences = {}  # Store preferences as a class attribute
         self.load_preferences()  # Load preferences from the file
@@ -56,7 +57,6 @@ class MainWidget(QWidget):
         options_action.triggered.connect(self.show_options_dialog)
         file_menu.addAction(options_action)
 
-
         # Create Actions Menu
         action_menu = QMenu("Actions", self)
         menu_bar.addMenu(action_menu)
@@ -70,14 +70,10 @@ class MainWidget(QWidget):
         vbox.addWidget(splitter)
         splitter.setChildrenCollapsible(False)
 
-        # Image label
-        self.image_label_widget = QWidget(self)
         # make the label expand on resize
-        self.image_label_layout = QHBoxLayout(self.image_label_widget)
         self.image_label_layout.setContentsMargins(0, 0, 0, 0)
 
         # The image list
-        self.image_list_widget = CheckListWidget.CheckListWidget()
         self.image_label_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.image_list_widget.itemClicked.connect(self.show_selected_image)  # on click change image
 
@@ -101,21 +97,19 @@ class MainWidget(QWidget):
         threshold_label = QLabel("Threshold:")
         threshold_label.setFixedWidth(60)
 
-        self.threshold_textbox = QLineEdit("200")
         self.threshold_textbox.setFixedWidth(50)
         self.threshold_textbox.setMaxLength(5)  # no reason for more than 5 digits
         validator = QIntValidator()  # restrict input to integers
         self.threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
-        threshold_button = QPushButton("Find Dupes")
-        threshold_button.setFixedWidth(75)
-        threshold_button.clicked.connect(lambda: self.find_dupes_action())
+        self.threshold_button.setFixedWidth(75)
+        self.threshold_button.clicked.connect(lambda: self.find_dupes_action())
 
         action_box_layout.addWidget(delete_button)
         action_box_layout.addWidget(spacer)
         action_box_layout.addWidget(threshold_label)
         action_box_layout.addWidget(self.threshold_textbox)
-        action_box_layout.addWidget(threshold_button)
+        action_box_layout.addWidget(self.threshold_button)
 
         # ############################# Form Box ################################## #
         form_box = QGroupBox()
@@ -126,27 +120,13 @@ class MainWidget(QWidget):
 
         # Create the first directory lookup
         label1 = QLabel("Directory 1:")
-        self.dir_line1 = QLineEdit(r"Test_images/Dupe test")  # Make it a class attribute using "self."
         directory_button1 = QPushButton("Browse")
         directory_button1.clicked.connect(lambda: self.browse_directory(self.dir_line1))
         form_layout.addWidget(label1, 0, 0)
         form_layout.addWidget(self.dir_line1, 0, 1)
         form_layout.addWidget(directory_button1, 0, 2)
 
-        """
-        # Create the second directory lookup
-        label2 = QLabel("Directory 2:")
-        self.dir_line2 = QLineEdit()  # Make it a class attribute using "self."
-        self.dir_line2.setPlaceholderText(" Leave blank for single directory lookup")
-        directory_button2 = QPushButton("Browse")
-        directory_button2.clicked.connect(lambda: self.browse_directory(self.dir_line2))
-        form_layout.addWidget(label2, 1, 0)
-        form_layout.addWidget(self.dir_line2, 1, 1)
-        form_layout.addWidget(directory_button2, 1, 2)
-        """
-
         # ################################## Set the layout for the main window ################################### #
-
         self.setLayout(vbox)
         self.setWindowTitle('MSE Duplicate Image Search')
         self.setGeometry(200, 200, 1024, 768)
@@ -230,11 +210,11 @@ class MainWidget(QWidget):
                 self.current_image_index = index
                 image_path = self.images[self.current_image_index]
                 if image_path is not None:
-                    self.update_image(image_path)
+                    self.update_image()
         except Exception as e:
             print(e)
 
-    def update_image(self, path):
+    def update_image(self):
         try:
             image_path = self.images[self.current_image_index]
             pixmap = QPixmap(image_path)  # open image as pixmap
@@ -276,7 +256,7 @@ class MainWidget(QWidget):
                 self.image_list_widget.setCurrentIndex(self.image_list_widget.model().index(new_index, 0))
                 image_path = self.images[self.current_image_index]
                 if image_path is not None:
-                    self.update_image(image_path)
+                    self.update_image()
                 else:
                     self.navigate(direction)  # skip spacers
 
