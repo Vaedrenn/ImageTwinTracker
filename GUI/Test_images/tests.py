@@ -1,9 +1,14 @@
 import os
+import sys
 from unittest import TestCase
 
-import numpy as np
+from PyQt5.QtCore import Qt
+from PyQt5.QtTest import QTest
+from PyQt5.QtWidgets import QApplication, QLineEdit, QMenu, QAction, QSplitter, QPushButton
 
-from SearchMse.find_dupes import create_img_list, find_dupes, ImgData, read_and_resize_image, __mse
+from GUI.CheckListWidget import CheckListWidget
+from SearchMse.find_dupes import create_img_list, find_dupes
+from GUI import Application
 
 
 class TestCreate(TestCase):
@@ -81,13 +86,13 @@ class TestSearch(TestCase):
         # concurrent testing
         test1 = create_img_list(root)
         result1 = find_dupes(test1, 1, threshold)
-        if self.assertEqual(len(result1),2):
+        if self.assertEqual(len(result1), 2):
             for dupes in result1:
                 for a in dupes:
                     a.display_path()
         else:
             for a in result1:
-                self.assertEqual(len(a),2)
+                self.assertEqual(len(a), 2)
                 self.assertEqual(len(set(a)), 2)
 
     def test_dupe_mixed2c(self, threshold=200, root=r"Dupe test 3/Test 2"):
@@ -107,13 +112,13 @@ class TestSearch(TestCase):
         # parallel testing
         test1 = create_img_list(root)
         result1 = find_dupes(test1, 2, threshold)
-        if self.assertEqual(len(result1),2):
+        if self.assertEqual(len(result1), 2):
             for dupes in result1:
                 for a in dupes:
                     a.display_path()
         else:
             for a in result1:
-                self.assertEqual(len(a),2)
+                self.assertEqual(len(a), 2)
                 self.assertEqual(len(set(a)), 2)
 
     def test_dupe_mixed2p(self, threshold=200, root=r"dupe test 3/Test 2"):
@@ -130,6 +135,45 @@ class TestSearch(TestCase):
                 self.assertEqual(len(set(a)), 2)
 
 
+class TestApplication(TestCase):
+    def setUp(self):
+        # Set up the QApplication before running tests
+        self.app = QApplication(sys.argv)
+
+    def test_main_app(self):
+        main_window = Application.MainWidget()
+        main_window.initUI()
+
+        self.assertIsInstance(main_window.file_menu, QMenu)
+        options_action = main_window.file_menu.actions()[0]
+        self.assertEqual(options_action.text(), "Options")
+
+        options_action = main_window.action_menu.actions()[0]
+        self.assertEqual(options_action.text(), "Clear Selected")
+        self.assertIsInstance(main_window.image_list_widget, CheckListWidget)
+        self.assertIsInstance(main_window.threshold_textbox, QLineEdit)
+        self.assertIsInstance(main_window.dir_line1, QLineEdit)
+
+    def test_threshold_textbox(self):
+        # Create an instance of the main window class
+        main_window = Application.MainWidget()
+        # Call the method that creates the UI elements
+        main_window.initUI()
+
+        # Get the threshold_textbox widget
+        threshold_textbox = main_window.threshold_textbox
+        self.assertEqual(threshold_textbox.text(), "200")
+        QTest.keyClick(threshold_textbox, Qt.Key_Backspace)
+        self.assertEqual(threshold_textbox.text(), "20")
+        QTest.keyClick(threshold_textbox, Qt.Key_0)
+        QTest.keyClicks(threshold_textbox, "200")
+
+    def tearDown(self):
+        # Clean up the QApplication after running tests
+        self.app.quit()
+
+
 if __name__ == '__main__':
     TestCreate()
     TestSearch()
+    TestApplication()

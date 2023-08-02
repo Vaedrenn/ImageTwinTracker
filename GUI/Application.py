@@ -1,18 +1,18 @@
 import json
-import os
 import sys
-
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy, QDialog
 
-import CheckListWidget
-from QT.Options import OptionsDialog
+from GUI import CheckListWidget
+from GUI.DeletePopUp import DeleteDialog
+from GUI.Options import OptionsDialog
+from GUI.dark_palette import create_dark_palette
+from GUI.light_palette import create_light_palette
+
 from SearchMse.find_dupes import find_dupes, create_img_list
-from dark_palette import create_dark_palette
-from light_palette import create_light_palette
-from DeletePopUp  import DeleteDialog
+
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -56,8 +56,14 @@ class MainWidget(QWidget):
         options_action.triggered.connect(self.show_options_dialog)
         file_menu.addAction(options_action)
 
-        clear_cache = QAction("Clear Cache", self)
-        file_menu.addAction(clear_cache)
+
+        # Create Actions Menu
+        action_menu = QMenu("Actions", self)
+        menu_bar.addMenu(action_menu)
+
+        clear_action = QAction("Clear Selected", self)
+        clear_action.triggered.connect(self.clear_selected)
+        action_menu.addAction(clear_action)
 
         # ############################ splitter ################################ #
         splitter = QSplitter()
@@ -180,7 +186,6 @@ class MainWidget(QWidget):
             # Get the text from the input field
             threads = self.preferences.get('Threads')
             img_list = create_img_list(dir1, threads)
-
             results = find_dupes(img_list, threads, int(threshold))
             if results:
                 self.images = []
@@ -193,6 +198,9 @@ class MainWidget(QWidget):
                     self.images.append(None)
         except Exception as e:
             print(e)
+
+    def clear_selected(self):
+        self.image_list_widget.clear_selection()
 
     def delete_selected(self):
         try:
@@ -270,7 +278,7 @@ class MainWidget(QWidget):
                 if image_path is not None:
                     self.update_image(image_path)
                 else:
-                    self.navigate(direction)
+                    self.navigate(direction)  # skip spacers
 
         except Exception as E:
             print(E)
