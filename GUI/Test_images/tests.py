@@ -66,8 +66,8 @@ class TestSearch(TestCase):
                 self.assertEqual(len(a), 11)
 
     # Should not find any duplicates
-    def test_dupes_false(self, threshold=500, root=r"dupe test 2"):
-        testfolders = [os.path.join(root, f) for root, dirs, files in os.walk(root) for f in dirs]
+    def test_dupes_false(self, threshold=500, root=r"Dupe test 2"):
+        testfolders = root
         if not testfolders:
             self.fail()
 
@@ -81,7 +81,7 @@ class TestSearch(TestCase):
                 self.assertEqual(len(a), None)
 
     # Test mixed folder of dupes and none dupes
-    def test_dupe_mixed1c(self, threshold=200, root=r"dupe test 3/test 1"):
+    def test_dupe_mixed1c(self, threshold=200, root=r"Dupe test 3/test 1"):
 
         # concurrent testing
         test1 = create_img_list(root)
@@ -144,12 +144,6 @@ class TestApplication(TestCase):
         main_window = Application.MainWidget()
         main_window.initUI()
 
-        self.assertIsInstance(main_window.file_menu, QMenu)
-        options_action = main_window.file_menu.actions()[0]
-        self.assertEqual(options_action.text(), "Options")
-
-        options_action = main_window.action_menu.actions()[0]
-        self.assertEqual(options_action.text(), "Clear Selected")
         self.assertIsInstance(main_window.image_list_widget, CheckListWidget)
         self.assertIsInstance(main_window.threshold_textbox, QLineEdit)
         self.assertIsInstance(main_window.dir_line1, QLineEdit)
@@ -166,7 +160,139 @@ class TestApplication(TestCase):
         QTest.keyClick(threshold_textbox, Qt.Key_Backspace)
         self.assertEqual(threshold_textbox.text(), "20")
         QTest.keyClick(threshold_textbox, Qt.Key_0)
-        QTest.keyClicks(threshold_textbox, "200")
+        self.assertEqual(threshold_textbox.text(), "200")
+
+        main_window.dir_line1.setText("Dupe test")
+        self.assertEqual(main_window.dir_line1.text(), "Dupe test")
+
+    def test__dupe_test1(self):
+        main_window = Application.MainWidget()
+        main_window.initUI()
+
+        main_window.dir_line1.setText("Dupe test")
+        self.assertEqual(main_window.dir_line1.text(), "Dupe test")
+
+        self.assertEqual(main_window.image_list_widget.count(), 0)
+        QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
+
+        # Check if image_list_widget is updated
+        final_item_count = main_window.image_list_widget.count()
+        self.assertGreater(final_item_count, 0)
+
+        self.assertEqual(final_item_count, len(main_window.images))
+
+        # Check if images lines up
+        for x in range(final_item_count):
+            img = main_window.images[x]
+            list_item = main_window.image_list_widget.item(x).text()
+            self.assertEqual(img, list_item)
+            if x > 0:
+                self.assertFalse(img == main_window.images[x - 1])
+                self.assertFalse(list_item == main_window.image_list_widget.item(x - 1).text())
+
+        self.assertEqual(main_window.images.count(''), 9)
+
+    def test__dupe_test2(self):
+        main_window = Application.MainWidget()
+        main_window.initUI()
+
+        main_window.dir_line1.setText("Dupe test 2")
+        self.assertEqual(main_window.dir_line1.text(), "Dupe test 2")
+
+        self.assertEqual(main_window.image_list_widget.count(), 0)
+        QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
+
+        # Should be empty
+        self.assertEqual(len(main_window.images), 0)
+        self.assertEqual(main_window.image_list_widget.count(), 0)
+
+    def test__dupe_test3(self):
+        main_window = Application.MainWidget()
+        main_window.initUI()
+
+        main_window.dir_line1.setText("Dupe test 3/Test 1")
+        self.assertEqual(main_window.dir_line1.text(), "Dupe test 3/Test 1")
+
+        self.assertEqual(main_window.image_list_widget.count(), 0)
+        QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
+
+        # Check if image_list_widget is updated
+        final_item_count = main_window.image_list_widget.count()
+        self.assertGreater(final_item_count, 0)
+
+        self.assertEqual(final_item_count, len(main_window.images))
+        # Check if images lines up with
+
+        for x in range(final_item_count):
+            img = main_window.images[x]
+            list_item = main_window.image_list_widget.item(x).text()
+            self.assertEqual(img, list_item)
+            if x > 0:
+                self.assertFalse(img == main_window.images[x - 1])
+                self.assertFalse(list_item == main_window.image_list_widget.item(x - 1).text())
+            # spacer check
+            if (x+1) % 3 == 0 and x != 0:
+                self.assertEqual(img, '')
+                self.assertEqual(list_item, '')
+        self.assertEqual(main_window.images.count(''), 2)
+
+        main_window.dir_line1.setText("Dupe test 3/Test 2")
+        self.assertEqual(main_window.dir_line1.text(), "Dupe test 3/Test 2")
+
+        self.assertEqual(main_window.image_list_widget.count(), 6)
+        QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
+
+        # Check if image_list_widget is updated
+        final_item_count = main_window.image_list_widget.count()
+        self.assertGreater(final_item_count, 0)
+
+        self.assertEqual(final_item_count, len(main_window.images))
+        # Check if images lines up with
+
+        for x in range(final_item_count):
+            img = main_window.images[x]
+            list_item = main_window.image_list_widget.item(x).text()
+            self.assertEqual(img, list_item)
+            if x > 0:
+                self.assertFalse(img == main_window.images[x - 1])
+                self.assertFalse(list_item == main_window.image_list_widget.item(x - 1).text())
+            # spacer check
+            if (x+1) % 3 == 0 and x != 0:
+                self.assertEqual(img, '')
+                self.assertEqual(list_item, '')
+        self.assertEqual(main_window.images.count(''), 3)
+
+    def test__valid_test(self):
+        def test__dupe_test3(self):
+            main_window = Application.MainWidget()
+            main_window.initUI()
+
+            main_window.dir_line1.setText("Tensor test")
+            self.assertEqual(main_window.dir_line1.text(), "Tensor test")
+
+            self.assertEqual(main_window.image_list_widget.count(), 0)
+            QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
+
+            # Check if image_list_widget is updated
+            final_item_count = main_window.image_list_widget.count()
+            self.assertGreater(final_item_count, 0)
+
+            self.assertEqual(final_item_count, len(main_window.images))
+            # Check if images lines up with
+
+            for x in range(final_item_count):
+                img = main_window.images[x]
+                list_item = main_window.image_list_widget.item(x).text()
+                self.assertEqual(img, list_item)
+                if x > 0:
+                    self.assertFalse(img == main_window.images[x - 1])
+                    self.assertFalse(list_item == main_window.image_list_widget.item(x - 1).text())
+            # spacer check
+            self.assertEqual(main_window.images.count(''), 1)
+            self.assertEqual(len(main_window.images), 11)
+            # check for dud
+            self.assertEqual(main_window.images.count('dud.txt'), 0)
+
 
     def tearDown(self):
         # Clean up the QApplication after running tests

@@ -175,7 +175,7 @@ class MainWidget(QWidget):
                         self.image_list_widget.addItem(img.file_path)
                         self.images.append(img.file_path)
                     self.image_list_widget.addSpacer()
-                    self.images.append(None)
+                    self.images.append('')
         except Exception as e:
             print(e)
 
