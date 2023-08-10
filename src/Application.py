@@ -4,12 +4,12 @@ from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy, QDialog
-from GUI.CheckListWidget import CheckListWidget
-from GUI.DeletePopUp import DeleteDialog
-from GUI.Options import OptionsDialog
-from GUI.dark_palette import create_dark_palette
-from GUI.light_palette import create_light_palette
-from SearchMse.find_dupes import find_dupes, create_img_list
+
+from src.Actions import Actions
+from src.CheckListWidget import CheckListWidget
+from src.Options import OptionsDialog
+from src.dark_palette import create_dark_palette
+from src.light_palette import create_light_palette
 
 
 class MainWidget(QWidget):
@@ -17,7 +17,7 @@ class MainWidget(QWidget):
         super().__init__()
         # Define the class attributes for input fields
         self.threshold_textbox = QLineEdit("200")
-        self.dir_line1 = QLineEdit(r"Test_images/Dupe test")
+        self.dir_line1 = QLineEdit("../tests/Dupe test")
 
         # Define the class attributes for splitter widgets
         self.image_list_widget = CheckListWidget()
@@ -98,7 +98,7 @@ class MainWidget(QWidget):
         threshold_label.setFixedWidth(60)
 
         self.threshold_textbox.setFixedWidth(50)
-        self.threshold_textbox.setMaxLength(5)  # no reason for more than 5 digits
+        self.threshold_textbox.setMaxLength(4)  # Anymore and you're gonna delete everything
         validator = QIntValidator()  # restrict input to integers
         self.threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
@@ -157,51 +157,13 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
-        try:
-            dir1 = self.dir_line1.text()  # Get the text from the input field
-            if not dir1:
-                return
-            # dir2 = self.dir_line2.text()  # Get the text from the input field
-            threshold = self.threshold_textbox.text()
-            # Get the text from the input field
-            threads = self.preferences.get('Threads')
-            img_list = create_img_list(dir1, threads)
-            results = find_dupes(img_list, threads, int(threshold))
-            if results:
-                self.images = []
-                self.image_list_widget.clear()
-                for dupes in results:
-                    for img in dupes:
-                        self.image_list_widget.addItem(img.file_path)
-                        self.images.append(img.file_path)
-                    self.image_list_widget.addSpacer()
-                    self.images.append('')
-        except Exception as e:
-            print(e)
+        Actions.find_dupes_action(self)  # Call the function from the Actions class
+
+    def delete_selected(self):
+        Actions.delete_selected(self)  # Call the function from the Actions class
 
     def clear_selected(self):
         self.image_list_widget.clear_selection()
-
-    def delete_selected(self):
-        try:
-            file_indexes = self.image_list_widget.getCheckedRows()
-            files = []
-
-            for f in file_indexes:
-                files.append(self.images[f])
-            delete_dialog = DeleteDialog(files)
-            result = delete_dialog.exec_()
-
-            if result == QDialog.Accepted:
-                self.image_list_widget.removeCheckedRows()
-                # Sort the indices in descending order to avoid index shift during removal
-                file_indexes.sort(reverse=True)
-
-                for row in file_indexes:
-                    self.images.pop(row)
-
-        except Exception as E:
-            print("Exception in Application.delete_selected: ", E)
 
     def show_selected_image(self, item):
         try:
@@ -255,7 +217,7 @@ class MainWidget(QWidget):
                 self.current_image_index = new_index
                 self.image_list_widget.setCurrentIndex(self.image_list_widget.model().index(new_index, 0))
                 image_path = self.images[self.current_image_index]
-                if image_path is not None:
+                if image_path != '':
                     self.update_image()
                 else:
                     self.navigate(direction)  # skip spacers

@@ -3,8 +3,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
-from GUI import Application
-from GUI.CheckListWidget import CheckListWidget
+from src import Application
+from src.CheckListWidget import CheckListWidget
 
 import pytest
 

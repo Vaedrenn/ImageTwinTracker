@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from SearchMse.find_dupes import create_img_list, find_dupes
+from src.find_dupes import create_img_list, find_dupes
 
 
 class TestCreate(TestCase):
