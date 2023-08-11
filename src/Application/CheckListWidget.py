@@ -82,4 +82,3 @@ class CheckListWidget(QListWidget):
             super().mouseDoubleClickEvent(event)
 
         except Exception as e: print(e)
-

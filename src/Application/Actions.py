@@ -47,4 +47,3 @@ class Actions:
 
         except Exception as E:
             print("Exception in Application.delete_selected: ", E)
-

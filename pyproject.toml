@@ -1,10 +1,15 @@
 [tool.poetry]
-name = "duplicate image search"
+name = "MSE-Duplicate-Search"
 version = "0.1.0"
 description = "Duplicate image locator that finds images that have been resized"
 authors = ["Vaedrenn <vaedrenn@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+
+packages = [
+  {include = "Application", from = "src"},
+  {include = "find_dupes", from = "src"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
