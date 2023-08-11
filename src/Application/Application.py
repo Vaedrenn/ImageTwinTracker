@@ -3,13 +3,13 @@ import sys
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
-    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy, QDialog
+    QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
 
-from src.Actions import Actions
-from src.CheckListWidget import CheckListWidget
-from src.Options import OptionsDialog
-from src.dark_palette import create_dark_palette
-from src.light_palette import create_light_palette
+from Application.Actions import Actions
+from Application.CheckListWidget import CheckListWidget
+from Application.Options import OptionsDialog
+from Application.dark_palette import create_dark_palette
+from Application.light_palette import create_light_palette
 
 
 class MainWidget(QWidget):
@@ -134,7 +134,7 @@ class MainWidget(QWidget):
 
     def load_preferences(self):
         try:
-            with open('pref.json', 'r') as file:
+            with open('../pref.json', 'r') as file:
                 self.preferences = json.load(file)
         except FileNotFoundError:
             print("Creating preferences file")
@@ -144,7 +144,7 @@ class MainWidget(QWidget):
                 'Dark': True,
                 # Add more preferences as needed
             }
-            with open("pref.json", "w") as file:
+            with open("../pref.json", "w") as file:
                 json.dump(self.preferences, file, indent=4)
 
     def show_options_dialog(self):

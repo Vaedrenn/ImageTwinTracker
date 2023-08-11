@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog
 
-from src.DeletePopUp import DeleteDialog
-from src.find_dupes import create_img_list, find_dupes
+from Application.DeletePopUp import DeleteDialog
+from find_dupes.find_dupes import create_img_list, find_dupes
 
 
 class Actions:

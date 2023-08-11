@@ -3,8 +3,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
-from src import Application
-from src.CheckListWidget import CheckListWidget
+from Application import Application
+from Application.CheckListWidget import CheckListWidget
 
 import pytest
 
@@ -17,12 +17,9 @@ def app_qt():
     # Tear down the QApplication after the test is done
     app.quit()
 
-
 @pytest.fixture
 def main_window():
-    main_window = Application.MainWidget()
-    main_window.initUI()
-    return main_window
+    return Application.MainWidget()
 
 
 # test if the important bits are there
