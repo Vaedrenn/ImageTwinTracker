@@ -1,22 +1,25 @@
+[tool.poetry]
+name = "duplicate image search"
+version = "0.1.0"
+description = "Duplicate image locator that finds images that have been resized"
+authors = ["Vaedrenn <vaedrenn@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "1.25.2"
+opencv-python = "4.8.0.74"
+pyqt5 = "5.15.9"
+pyqt5-sip = "12.12.2"
+send2trash = "1.8.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=6.0"
+pytest-cov = ">=2.0"
+mypy = ">=0.910"
+flake8 = ">=3.9"
+
 [build-system]
-requires = ["setuptools>=42.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
-
-[tool.mypy]
-mypy_path = "src"
-check_untyped_defs = true
-disallow_any_generics = true
-ignore_missing_imports = true
-no_implicit_optional = true
-show_error_codes = true
-strict_equality = true
-warn_redundant_casts = true
-warn_return_any = true
-warn_unreachable = true
-warn_unused_configs = true
-no_implicit_reexport = true
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

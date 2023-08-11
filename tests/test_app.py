@@ -48,8 +48,8 @@ def test_threshold_textbox(app_qt, main_window):
 
 def test_dupe_test1(app_qt, main_window):
     # check dirs
-    main_window.dir_line1.setText("Dupe test")
-    assert main_window.dir_line1.text() == "Dupe test"
+    main_window.dir_line1.setText("tests/Dupe test")
+    assert main_window.dir_line1.text() == "tests/Dupe test"
 
     # check initial count and then click
     assert main_window.image_list_widget.count() == 0
@@ -74,8 +74,8 @@ def test_dupe_test1(app_qt, main_window):
 
 # No dupes here
 def test_dupe_test2(app_qt, main_window):
-    main_window.dir_line1.setText("Dupe test 2")
-    assert main_window.dir_line1.text() == "Dupe test 2"
+    main_window.dir_line1.setText("tests/Dupe test 2")
+    assert main_window.dir_line1.text() == "tests/Dupe test 2"
 
     assert main_window.image_list_widget.count() == 0
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
@@ -86,8 +86,8 @@ def test_dupe_test2(app_qt, main_window):
 
 # Test mixed folders of dupes and non dupes
 def test_dupe_test3(app_qt, main_window):
-    main_window.dir_line1.setText("Dupe test 3/Test 1")
-    assert main_window.dir_line1.text() == "Dupe test 3/Test 1"
+    main_window.dir_line1.setText("tests/Dupe test 3/Test 1")
+    assert main_window.dir_line1.text() == "tests/Dupe test 3/Test 1"
 
     assert main_window.image_list_widget.count() == 0
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
@@ -109,8 +109,8 @@ def test_dupe_test3(app_qt, main_window):
             assert list_item == ''
     assert main_window.images.count('') == 2
 
-    main_window.dir_line1.setText("Dupe test 3/Test 2")
-    assert main_window.dir_line1.text() == "Dupe test 3/Test 2"
+    main_window.dir_line1.setText("tests/Dupe test 3/Test 2")
+    assert main_window.dir_line1.text() == "tests/Dupe test 3/Test 2"
 
     assert main_window.image_list_widget.count() == 6
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
@@ -134,8 +134,8 @@ def test_dupe_test3(app_qt, main_window):
 
 
 def test_valid_test(app_qt, main_window):
-    main_window.dir_line1.setText("Tensor test")
-    assert main_window.dir_line1.text() == "Tensor test"
+    main_window.dir_line1.setText("tests/Tensor test")
+    assert main_window.dir_line1.text() == "tests/Tensor test"
 
     assert main_window.image_list_widget.count() == 0
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
