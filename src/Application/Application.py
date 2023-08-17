@@ -1,5 +1,4 @@
 import json
-import sys
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
@@ -157,6 +156,7 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
+        print("# Call the function from the Actions class")
         Actions.find_dupes_action(self)  # Call the function from the Actions class
 
     def delete_selected(self):
@@ -230,9 +230,3 @@ class MainWidget(QWidget):
 
     def hideEvent(self, event):
         self.image_list_widget.removeEventFilter(self)
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    widget = MainWidget()
-    sys.exit(app.exec())

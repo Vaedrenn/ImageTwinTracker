@@ -60,6 +60,7 @@ def __process_file(file):
 def read_and_resize_image(file):
     # Open the image as a color image to prevent errors caused by grayscale images
     image = cv2.imdecode(np.fromfile(file, dtype=np.uint8), cv2.IMREAD_COLOR)
+    print("Reading: ", file)
     if image is not None and type(image) == np.ndarray:
         height, width, channels = image.shape
         if height > width:
@@ -127,7 +128,7 @@ def mse_search(arr, threshold=50):
         # go through the tensors and find the mse
         while len(arr) >= 2 and i < len(arr):
             ratio = __mse(arr[0], arr[i])
-            #print(arr[0].display_path(), arr[1].display_path(), "Ratio: ", ratio)
+            print(arr[0].display_path(), arr[1].display_path(), "Ratio: ", ratio)
             # if the mse is less than the threshold add it to the bundle of dupes for this image
             if ratio < threshold:
                 dupes.append(arr.pop(i))
