@@ -16,7 +16,7 @@ class MainWidget(QWidget):
         super().__init__()
         # Define the class attributes for input fields
         self.threshold_textbox = QLineEdit("200")
-        self.dir_line1 = QLineEdit("../tests/Dupe test")
+        self.dir_line1 = QLineEdit()
 
         # Define the class attributes for splitter widgets
         self.image_list_widget = CheckListWidget()
@@ -93,7 +93,7 @@ class MainWidget(QWidget):
 
         spacer = QLabel()
 
-        threshold_label = QLabel("Threshold:")
+        threshold_label = QLabel("Tolerance:")
         threshold_label.setFixedWidth(60)
 
         self.threshold_textbox.setFixedWidth(50)
@@ -156,7 +156,6 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
-        print("# Call the function from the Actions class")
         Actions.find_dupes_action(self)  # Call the function from the Actions class
 
     def delete_selected(self):

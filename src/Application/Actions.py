@@ -7,7 +7,6 @@ from find_dupes.find_dupes import create_img_list, find_dupes
 class Actions:
     @staticmethod
     def find_dupes_action(main_widget):
-        print("entering find dupes")
         try:
             dir1 = main_widget.dir_line1.text()  # Get the text from the input field
             if not dir1:
