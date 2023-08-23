@@ -2,8 +2,8 @@ import imghdr
 import multiprocessing
 import os
 
-import cv2
 import numpy as np
+from PIL import Image
 
 
 class ImgData:
@@ -58,23 +58,22 @@ def __process_file(file):
 
 # read the image data and convert it into a tensor
 def read_and_resize_image(file):
-    # Open the image as a color image to prevent errors caused by grayscale images
-    image = cv2.imdecode(np.fromfile(file, dtype=np.uint8), cv2.IMREAD_COLOR)
-    print("Reading: ", file)
-    if image is not None and type(image) == np.ndarray:
-        height, width, channels = image.shape
+    try:
+        image = Image.open(file)
+        print("Reading:", file)
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        width, height = image.size
         if height > width:
             ratio = 'p'
         else:
             ratio = 'l'
-        #  check if it has been successfully converted to a numpy n-dimensional array, and has 3 layers at maximum.
-        image = image[..., 0:3]
-        # resize the image to speed up comparisons
-        image = cv2.resize(image, dsize=(50, 50), interpolation=cv2.INTER_CUBIC)
-    else:
-        return
-    ret = ImgData(file, ratio, image)
-    return ret
+        image = image.resize((50, 50), Image.LANCZOS)
+        image_array = np.array(image)
+        return ImgData(file, ratio, image_array)
+    except Exception as e:
+        print("Error reading:", file, e)
+        return None
 
 
 # MSE search each split of the tensor list

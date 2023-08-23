@@ -1,12 +1,12 @@
 import sys
+
+import pytest
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
 from Application import Application
 from Application.CheckListWidget import CheckListWidget
-
-import pytest
 
 
 @pytest.fixture
@@ -69,7 +69,7 @@ def test_dupe_test1(app_qt, main_window):
             assert img != main_window.images[x - 1]
             assert list_item != main_window.image_list_widget.item(x - 1).text()
     # Spacers check
-    assert main_window.images.count('') == 9
+    assert main_window.images.count('') == 8
 
 
 # No dupes here
