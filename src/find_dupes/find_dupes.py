@@ -127,7 +127,9 @@ def mse_search(arr, threshold=50):
         # go through the tensors and find the mse
         while len(arr) >= 2 and i < len(arr):
             ratio = __mse(arr[0], arr[i])
-            print(arr[0].display_path(), arr[1].display_path(), "Ratio: ", ratio)
+            arr[0].display_path()
+            arr[i].display_path()
+            print("Ratio: ", ratio)
             # if the mse is less than the threshold add it to the bundle of dupes for this image
             if ratio < threshold:
                 dupes.append(arr.pop(i))

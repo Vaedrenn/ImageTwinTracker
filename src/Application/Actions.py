@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QMessageBox
 
 from Application.DeletePopUp import DeleteDialog
 from find_dupes.find_dupes import create_img_list, find_dupes
@@ -24,6 +24,8 @@ class Actions:
                         main_widget.images.append(img.file_path)
                     main_widget.image_list_widget.addSpacer()
                     main_widget.images.append('')
+            else:
+                QMessageBox.information(main_widget," ", "No duplicate images were found.")
         except Exception as e:
             print(e)
 

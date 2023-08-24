@@ -21,9 +21,9 @@ class MainWidget(QWidget):
         # Define the class attributes for splitter widgets
         self.image_list_widget = CheckListWidget()
         self.image_label_widget = QWidget(self)
-        self.image_label_layout = QHBoxLayout(self.image_label_widget)
+        self.image_label_layout = QVBoxLayout(self.image_label_widget)
         self.images = []
-        self.current_image_index = 0
+        self.current_image_index = -1
 
         self.threshold_button = QPushButton("Find Dupes")
 
@@ -128,12 +128,12 @@ class MainWidget(QWidget):
         # ################################## Set the layout for the main window ################################### #
         self.setLayout(vbox)
         self.setWindowTitle('MSE Duplicate Image Search')
-        self.setGeometry(200, 200, 1024, 768)
+        self.setGeometry(50, 50, 1024, 768)
         self.show()
 
     def load_preferences(self):
         try:
-            with open('../pref.json', 'r') as file:
+            with open('pref.json', 'r') as file:
                 self.preferences = json.load(file)
         except FileNotFoundError:
             print("Creating preferences file")
@@ -143,7 +143,7 @@ class MainWidget(QWidget):
                 'Dark': True,
                 # Add more preferences as needed
             }
-            with open("../pref.json", "w") as file:
+            with open("pref.json", "w") as file:
                 json.dump(self.preferences, file, indent=4)
 
     def show_options_dialog(self):
@@ -170,7 +170,7 @@ class MainWidget(QWidget):
             if index != self.current_image_index:
                 self.current_image_index = index
                 image_path = self.images[self.current_image_index]
-                if image_path is not None:
+                if image_path != "":
                     self.update_image()
         except Exception as e:
             print(e)
@@ -186,12 +186,26 @@ class MainWidget(QWidget):
 
             image_label = QLabel(self.image_label_widget)
             image_label.setAlignment(Qt.AlignCenter)
+
+            width = self.image_label_widget.width()
+            height = self.image_label_widget.height()-31
+
             # scale down image if it's bigger than the container
-            if pixmap.width() > self.image_label_widget.width() or pixmap.height() > self.image_label_widget.height():
-                image_label.setPixmap(pixmap.scaled(self.image_label_widget.size(), Qt.AspectRatioMode.KeepAspectRatio))
+            if pixmap.width() > width or pixmap.height() > height:
+                image_label.setPixmap(pixmap.scaled(width, height, Qt.AspectRatioMode.KeepAspectRatio))
             else:
                 image_label.setPixmap(pixmap)
             self.image_label_layout.addWidget(image_label)
+
+            # Update image dimensions label
+            width = pixmap.width()
+            height = pixmap.height()
+            dimensions_text = f"Image Dimensions: {width} x {height}"
+
+            image_info = QLabel(dimensions_text)
+            image_info.setFixedHeight(25)
+            image_info.setAlignment(Qt.AlignCenter)
+            self.image_label_layout.addWidget(image_info)
 
         except Exception as e:
             print(e)
