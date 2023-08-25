@@ -2,8 +2,7 @@ import multiprocessing
 import sys
 
 from PyQt5.QtWidgets import QApplication
-
-from Application.Application import MainWidget
+from gui.Application import MainWidget
 
 
 def main():

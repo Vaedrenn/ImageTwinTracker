@@ -71,8 +71,8 @@ def read_and_resize_image(file):
         image = image.resize((50, 50), Image.LANCZOS)
         image_array = np.array(image)
         return ImgData(file, ratio, image_array)
-    except Exception as e:
-        print("Error reading:", file, e)
+    except (IOError, OSError):
+        print(f"Not an image: {file}")
         return None
 
 

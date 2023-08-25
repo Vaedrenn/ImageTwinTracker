@@ -4,11 +4,12 @@ from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
 
-from Application.Actions import Actions
-from Application.CheckListWidget import CheckListWidget
-from Application.Options import OptionsDialog
-from Application.dark_palette import create_dark_palette
-from Application.light_palette import create_light_palette
+from actions.find_dupes_action import FindDuplicates
+from gui.CheckListWidget import CheckListWidget
+from gui.Options import OptionsDialog
+from styles.dark_palette import create_dark_palette
+from styles.light_palette import create_light_palette
+from actions.delete_selected import DeleteSelected
 
 
 class MainWidget(QWidget):
@@ -56,8 +57,8 @@ class MainWidget(QWidget):
         options_action.triggered.connect(self.show_options_dialog)
         file_menu.addAction(options_action)
 
-        # Create Actions Menu
-        action_menu = QMenu("Actions", self)
+        # Create actions Menu
+        action_menu = QMenu("actions", self)
         menu_bar.addMenu(action_menu)
 
         clear_action = QAction("Clear Selected", self)
@@ -156,10 +157,10 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
-        Actions.find_dupes_action(self)  # Call the function from the Actions class
+        FindDuplicates.find_dupes_action(self)  # Call the function from the actions class
 
     def delete_selected(self):
-        Actions.delete_selected(self)  # Call the function from the Actions class
+        DeleteSelected.delete_selected(self)  # Call the function from the actions class
 
     def clear_selected(self):
         self.image_list_widget.clear_selection()

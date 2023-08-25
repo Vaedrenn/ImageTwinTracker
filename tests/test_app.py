@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pytest
@@ -5,8 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
-from Application import Application
-from Application.CheckListWidget import CheckListWidget
+from gui import Application
+from gui.CheckListWidget import CheckListWidget
 
 
 @pytest.fixture
@@ -69,7 +70,7 @@ def test_dupe_test1(app_qt, main_window):
             assert img != main_window.images[x - 1]
             assert list_item != main_window.image_list_widget.item(x - 1).text()
     # Spacers check
-    assert main_window.images.count('') == 8
+    assert main_window.images.count('') == 7
 
 
 # No dupes here
@@ -107,12 +108,12 @@ def test_dupe_test3(app_qt, main_window):
         if (x + 1) % 3 == 0 and x != 0:
             assert img == ''
             assert list_item == ''
-    assert main_window.images.count('') == 2
+    assert main_window.images.count('') == 1
 
     main_window.dir_line1.setText("tests/Dupe test 3/Test 2")
     assert main_window.dir_line1.text() == "tests/Dupe test 3/Test 2"
 
-    assert main_window.image_list_widget.count() == 6
+    assert main_window.image_list_widget.count() == 5
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
 
     final_item_count = main_window.image_list_widget.count()
@@ -130,7 +131,7 @@ def test_dupe_test3(app_qt, main_window):
         if (x + 1) % 3 == 0 and x != 0:
             assert img == ''
             assert list_item == ''
-    assert main_window.images.count('') == 3
+    assert main_window.images.count('') == 2
 
 
 def test_valid_test(app_qt, main_window):
@@ -141,7 +142,7 @@ def test_valid_test(app_qt, main_window):
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
 
     final_item_count = main_window.image_list_widget.count()
-    assert final_item_count == 12
+    assert final_item_count == 11
     assert final_item_count == len(main_window.images)
 
     for x in range(final_item_count):
@@ -152,6 +153,6 @@ def test_valid_test(app_qt, main_window):
             assert img != main_window.images[x - 1]
             assert list_item != main_window.image_list_widget.item(x - 1).text()
 
-    assert main_window.images.count('') == 1
-    assert len(main_window.images) == 12
+    assert main_window.images.count('') == 0
+    assert len(main_window.images) == 11
     assert main_window.images.count('dud.txt') == 0
