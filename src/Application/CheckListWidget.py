@@ -14,12 +14,13 @@ class CheckListWidget(QListWidget):
         item.setCheckState(Qt.Unchecked)
         QListWidget.addItem(self, item)  # use QListWidget's addItem
 
-    def addSpacer(self,):
+    def addSpacer(self):
         item = QListWidgetItem()
         # make item not selectable
         item.setFlags(
             item.flags() & ~(Qt.ItemIsSelectable | Qt.ItemIsUserCheckable))  # Clear selectable and checkable flags
         QListWidget.addItem(self, item)  # use QListWidget
+        return item
 
     def getCheckedRows(self):
         return self.__getRows(Qt.Checked)
