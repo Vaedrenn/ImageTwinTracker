@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QDialog
 
-from gui.DeletePopUp import DeleteDialog
+from ImageTwinTracker.gui.DeletePopUp import DeleteDialog
 
 
 def delete_selected(main_widget):
