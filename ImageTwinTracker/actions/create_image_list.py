@@ -54,15 +54,17 @@ def create_image_list(main_widget):
     folder_files = [os.path.join(root, f) for root, dirs, files in os.walk(dir1) for f in files]
     pool = QThreadPool.globalInstance()
 
+    ideal_thread_count = pool.maxThreadCount()
     if threads > pool.maxThreadCount():
         threads = pool.maxThreadCount()
-        pool.setMaxThreadCount(threads)
+    pool.setMaxThreadCount(threads)
 
     for file in folder_files:
         runnable = Runnable(img_list, file)
         pool.start(runnable)
 
     pool.waitForDone()
+    pool.setMaxThreadCount(ideal_thread_count)  # reset to default max on exit
     return img_list
 
 

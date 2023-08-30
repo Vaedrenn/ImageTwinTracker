@@ -129,7 +129,7 @@ class MainWidget(QWidget):
         # ################################## Set the layout for the main window ################################### #
         self.setLayout(vbox)
         self.setWindowTitle('MSE Duplicate Image Search')
-        self.setGeometry(50, 50, 1024, 768)
+        self.setGeometry(400, 50, 1024, 768)
         self.show()
 
     def load_preferences(self):
