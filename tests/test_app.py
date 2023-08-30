@@ -6,8 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
-from gui import Application
-from gui.CheckListWidget import CheckListWidget
+from ImageTwinTracker.gui import Application
+from ImageTwinTracker.gui.CheckListWidget import CheckListWidget
 
 
 @pytest.fixture
