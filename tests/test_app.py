@@ -18,6 +18,7 @@ def app_qt():
     # Tear down the QApplication after the test is done
     app.quit()
 
+
 @pytest.fixture
 def main_window():
     return Application.MainWidget()
