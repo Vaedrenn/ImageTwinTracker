@@ -1,15 +1,13 @@
 [tool.poetry]
-name = "MSE-Duplicate-Search"
-version = "0.1.1"
+name = "ImageTwinTracker"
+version = "0.1.2"
 description = "Duplicate image locator that finds images that have been resized"
 authors = ["Vaedrenn <vaedrenn@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 packages = [
-  {include = "gui", from = "ImageTwinTracker"},
-  {include = "actions", from = "ImageTwinTracker"},
-  {include = "styles", from = "ImageTwinTracker"}
+    { include = "ImageTwinTracker", from = "." }
 ]
 
 [tool.poetry.dependencies]

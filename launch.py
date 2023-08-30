@@ -2,7 +2,7 @@ import multiprocessing
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from gui.Application import MainWidget
+from ImageTwinTracker.gui.Application import MainWidget
 
 
 def main():

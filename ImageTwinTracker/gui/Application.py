@@ -4,12 +4,12 @@ from PyQt5.QtGui import QPixmap, QIntValidator
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMenuBar, QSplitter, QGroupBox, QLabel, \
     QLineEdit, QMenu, QPushButton, QFileDialog, QHBoxLayout, QStyleFactory, QGridLayout, QAction, QSizePolicy
 
-from actions.find_dupes_action import FindDuplicates
-from gui.CheckListWidget import CheckListWidget
-from gui.Options import OptionsDialog
-from styles.dark_palette import create_dark_palette
-from styles.light_palette import create_light_palette
-from actions.delete_selected import DeleteSelected
+from ImageTwinTracker.gui.CheckListWidget import CheckListWidget
+from ImageTwinTracker.gui.Options import OptionsDialog
+from ImageTwinTracker.styles.dark_palette import create_dark_palette
+from ImageTwinTracker.styles.light_palette import create_light_palette
+from ImageTwinTracker.actions.delete_selected import delete_selected
+from ImageTwinTracker.actions.find_dupes_action import find_dupes_action
 
 
 class MainWidget(QWidget):
@@ -98,7 +98,7 @@ class MainWidget(QWidget):
         threshold_label.setFixedWidth(60)
 
         self.threshold_textbox.setFixedWidth(50)
-        self.threshold_textbox.setMaxLength(4)  # Anymore and you're gonna delete everything
+        self.threshold_textbox.setMaxLength(4)  # Anymore and you're going to delete everything
         validator = QIntValidator()  # restrict input to integers
         self.threshold_textbox.setValidator(validator)  # Set the validator for the line edit
 
@@ -157,10 +157,11 @@ class MainWidget(QWidget):
         line_edit.setText(directory)
 
     def find_dupes_action(self):
-        FindDuplicates.find_dupes_action(self)  # Call the function from the actions class
+
+        find_dupes_action(self)
 
     def delete_selected(self):
-        DeleteSelected.delete_selected(self)  # Call the function from the actions class
+        delete_selected(self)  # Call the function from the actions class
 
     def clear_selected(self):
         self.image_list_widget.clear_selection()
@@ -189,7 +190,7 @@ class MainWidget(QWidget):
             image_label.setAlignment(Qt.AlignCenter)
 
             width = self.image_label_widget.width()
-            height = self.image_label_widget.height()-31
+            height = self.image_label_widget.height() - 31
 
             # scale down image if it's bigger than the container
             if pixmap.width() > width or pixmap.height() > height:
