@@ -33,8 +33,8 @@ MSE is calculated by taking the average of the squared pixel-wise differences be
 When using **ImageTwinTracker**, the tool compares images in pairs and computes their MSE values. Images with an MSE of 200 or less are flagged as potential duplicates. Keep in mind that this threshold may vary based on factors such as image content and quality.
 
 ### Adjusting Tolerance
-If you find that the default tolerance of 200 doesn't suit your specific use case, you can adjust it to be more or less stringent. Experiment with different threshold values to find the setting that works best for your image dataset.
-- In general, duplicate images typically have an MSE less than 500 with the average being 200
+If you find that the default tolerance of 50 doesn't suit your specific use case, you can adjust it to be more or less stringent. Experiment with different threshold values to find the setting that works best for your image dataset.
+- In general, duplicate images typically have an MSE less than 50 with the average being 20
 - Non-duplicate pairs will have an MSE in the tens of thousands
 
 ### Multiprocessing

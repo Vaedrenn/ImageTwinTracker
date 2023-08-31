@@ -33,13 +33,13 @@ def test_main_app(app_qt, main_window):
 # Test if keys work
 def test_threshold_textbox(app_qt, main_window):
     threshold_textbox = main_window.threshold_textbox
-    assert threshold_textbox.text() == "200"
+    assert threshold_textbox.text() == "50"
 
     QTest.keyClick(threshold_textbox, Qt.Key_Backspace)
-    assert threshold_textbox.text() == "20"
+    assert threshold_textbox.text() == "5"
 
     QTest.keyClick(threshold_textbox, Qt.Key_0)
-    assert threshold_textbox.text() == "200"
+    assert threshold_textbox.text() == "50"
 
     main_window.dir_line1.setText("Dupe test")
     assert main_window.dir_line1.text() == "Dupe test"
@@ -54,6 +54,7 @@ def test_dupe_test1(app_qt, main_window):
 
     # check initial count and then click
     assert main_window.image_list_widget.count() == 0
+    main_window.threshold_textbox.setText("50")
     QTest.mouseClick(main_window.threshold_button, Qt.LeftButton)
 
     # Check if image_list_widget is updated

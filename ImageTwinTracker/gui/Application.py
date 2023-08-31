@@ -16,7 +16,7 @@ class MainWidget(QWidget):
     def __init__(self):
         super().__init__()
         # Define the class attributes for input fields
-        self.threshold_textbox = QLineEdit("200")
+        self.threshold_textbox = QLineEdit("50")
         self.dir_line1 = QLineEdit()
 
         # Define the class attributes for splitter widgets
