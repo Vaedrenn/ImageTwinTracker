@@ -51,7 +51,7 @@ class OptionsDialog(QDialog):
         self.preferences['Dark'] = dark_theme_checkbox.isChecked()
 
         # Save the preferences to the file
-        with open('../../pref.json', 'w') as file:
+        with open('pref.json', 'w') as file:
             json.dump(self.preferences, file, indent=4)
 
         super().accept()
