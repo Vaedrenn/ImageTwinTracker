@@ -9,7 +9,7 @@ An image search tool that locates duplicate images of different sizes.
 + Python 3.7+
 + Windows 10/11
 ### Installation on Windows 10/11 using release package
-1. Download [ImageTwinTracker-v0.1.1.zip](https://github.com/Vaedrenn/ImageTwinTracker/releases/tag/v0.1.1) from v0.1.1 and extract its contents.
+1. Download [ImageTwinTracker-v0.1.1.zip](https://github.com/Vaedrenn/ImageTwinTracker/releases) from v0.1.1 and extract its contents.
 2. Run ImageTwinTracker.exe
 
 ### Building from source
